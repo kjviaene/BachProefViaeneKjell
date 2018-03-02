@@ -1,0 +1,15 @@
+[0] Config.pm:302> INFO - This is Biber 2.9
+[1] Config.pm:305> INFO - Logfile is 'Viaene_Kjell_voorstel.blg'
+[49] biber-MSWIN64:313> INFO - === 
+[75] Biber.pm:371> INFO - Reading 'Viaene_Kjell_voorstel.bcf'
+[188] Biber.pm:857> INFO - Found 2 citekeys in bib section 0
+[205] Biber.pm:3981> INFO - Processing section 0
+[218] Biber.pm:4154> INFO - Looking for bibtex format file 'biblio.bib' for section 0
+[221] bibtex.pm:1479> INFO - LaTeX decoding ...
+[225] bibtex.pm:1305> INFO - Found BibTeX data source 'biblio.bib'
+[246] UCollate.pm:68> INFO - Overriding locale 'nl-NL' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[246] UCollate.pm:68> INFO - Overriding locale 'nl-NL' defaults 'variable = shifted' with 'variable = non-ignorable'
+[246] Biber.pm:3809> INFO - Sorting list 'apa/global//global/global' of type 'entry' with template 'apa' and locale 'nl-NL'
+[246] Biber.pm:3815> INFO - No sort tailoring available for locale 'nl-NL'
+[249] bbl.pm:617> INFO - Writing 'Viaene_Kjell_voorstel.bbl' with encoding 'UTF-8'
+[250] bbl.pm:720> INFO - Output to Viaene_Kjell_voorstel.bbl

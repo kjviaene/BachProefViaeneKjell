@@ -1,0 +1,161 @@
+%==============================================================================
+% Sjabloon onderzoeksvoorstel bachelorproef
+%==============================================================================
+% Gebaseerd op LaTeX-sjabloon ‘Stylish Article’ (zie voorstel.cls)
+% Auteur: Jens Buysse, Bert Van Vreckem
+
+% TODO: Compileren document:
+% 1) Vervang ‘naam_voornaam’ in de bestandsnaam door je eigen naam, bv.
+%    buysse_jens_voorstel.tex
+% 2) latexmk -pdf naam_voornaam_voorstel.tex
+% 3) biber naam_voornaam_voorstel
+% 4) latexmk -pdf naam_voornaam_voorstel.tex (1 keer)
+
+\documentclass[fleqn,10pt]{voorstel}
+
+%------------------------------------------------------------------------------
+% Metadata over het artikel
+%------------------------------------------------------------------------------
+
+\JournalInfo{HoGent Bedrijf en Organisatie} % Journal information
+\Archive{Bachelor thesis Kjell Viaene 2017 - 2018} % Additional notes (e.g. copyright, DOI, review/research article)
+
+%---------- Titel & auteur ----------------------------------------------------
+
+% TODO: geef werktitel van je eigen voorstel op
+\PaperTitle{A secure environment for conducting exams on personal devices }
+\PaperType{Research proposal bachelor thesis} % Type document
+
+% TODO: vul je eigen naam in als auteur, geef ook je emailadres mee!
+\Authors{Kjell Viaene\textsuperscript{1}} % Authors
+\affiliation{\textbf{Contact:}
+  \textsuperscript{1} \href{mailto:kjell.viaene@student.hogent.be}{kjell.viaene@student.hogent.be};}
+
+%---------- Abstract ----------------------------------------------------------
+% ---- voorloping abstract ---
+% Hedendaags, als studenten een examen digitaal dienen af te leggen gebeurd dit vrijwel uitsluitend op computers aanwezig in de klaslokalen voorzien door de HoGent. Nu zou er in de toekomst een verminderen moeten zijn van het aantal pc-klassen in het gebouw. Dit vraagt dus om een nieuwe manier voor het afleggen van digitale examens waarbij er geen mogelijkheid tot fraude is. Onder 
+%
+%
+%
+%
+%
+%
+%
+  \Abstract{Currently, when conducting digital examinations at the University College of Ghent, digital exams are usually organised in computer classrooms. On desktop computers owned by the college. The reason for this is because it’s a controlled environment. The computers already have all the needed software installed. Furthermore, the access to applications and the internet is limited by the use of special services (NetOp in our case).  There is however a need to reduce the amount of computer classrooms in the future. This calls for a new method of conducting digital examinations where there is no possibility of cheating. Things that are considered cheating are: communication between students, visiting websites that are of no use to the exam, using non allowed software. Adding to this we want to configure an “exam server” to which students can submit their completed examinations and from which teachers can revise them.\\
+To achieve this we research the possibility for students to bring their own device to the classroom and have the possibility of making an examination while minimizing the possibilities to cheat. Examinations can be of different types, like: Online tests using an online service (Chamillo, Netacad,…) or via installed software on their devices via which the exam can be submitted to the exam server. \\
+The ideas that we’ll work on will be accompanied by a proof-of-concept and a way to automate the setup process. An expected result is therefore a classroom which is polyvalent. The classroom can be used for regular exams and classes. As well as serving as a computer classroom to conduct digital exams. This by allowing students to connect to the network (for example, by using a specialized Wi-Fi SSID) that is only accessible to the students who are registered for the exam being conducted.
+}
+
+%---------- Onderzoeksdomein en sleutelwoorden --------------------------------
+% TODO: Sleutelwoorden:
+%
+% Het eerste sleutelwoord beschrijft het onderzoeksdomein. Je kan kiezen uit
+% deze lijst:
+%
+% - Mobiele applicatieontwikkeling
+% - Webapplicatieontwikkeling
+% - Applicatieontwikkeling (andere)
+% - Systeem- en netwerkbeheer
+% - Mainframe
+% - E-business
+% - Databanken en big data
+% - Machine learning en kunstmatige intelligentie
+% - Andere (specifieer)
+%
+% De andere sleutelwoorden zijn vrij te kiezen
+
+\Keywords{Research domain: System and network management--- Network Security --- Automation} % Keywords
+\newcommand{\keywordname}{Keywords} % Defines the keywords heading name
+
+%---------- Titel, inhoud -----------------------------------------------------
+\begin{document}
+
+\flushbottom % Makes all text pages the same height
+\maketitle % Print the title and abstract box
+\tableofcontents % Print the contents section
+\thispagestyle{empty} % Removes page numbering from the first page
+
+%------------------------------------------------------------------------------
+% Hoofdtekst
+%------------------------------------------------------------------------------
+
+%---------- Inleiding ---------------------------------------------------------
+
+\section{Introduction} % The \section*{} command stops section numbering
+\label{sec:introductie}
+
+Students sometimes have to take an exam digitally at the University College of Ghent. This now happens on PCs provided by the college in computer classrooms. However, this is something we want to get rid of. If students always have the opportunity to take exams and tests via their own computers, this will provide more freedom for both the school and the students. More exams can be taken digitally and the amount of digital examinations that are taken simultaneously can be increased. This no longer depends on the number of computer classrooms that are available.\\
+\\
+\\
+The system now allows you to take digital exams, but not in optimal conditions. Currently there is a big possibility of cheating during an exam. Students use the internet while this is not allowed, communicate with each other or use prohibited applications. Completely removing internet access in the classrooms is now possible (by simply disconnecting the classroom from the school network) but is not wanted in a lot of cases. If we implement an exam server access to the network must be possible. Exams which require logging  into external sites (e.g. netacad) require internet access as well.  With no immediate changes in sight, more teachers tend to take a step back and take written examinations. The exact opposite of what is desired. However, neither the students nor the teachers are to blame but the system is. We want to succeed in designing a system, where fraud is eliminated and students can use their own laptop to take the exams. Setting up these environments should be automated so that this can be done quickly and flexibly. For example, dozens of ordinary classrooms can suddenly serve as computer classrooms. \\
+\begin{itemize}
+  \item \textbf{Goal}: Creating an environment in which we are able to conduct a digital exam while limiting the possibilities to cheat.
+  \item \textbf{Research questions}:
+\begin{itemize}
+   \item Can we limit access to the Internet to only the necessary items? (e.g. allowing access to chamillo.hogent.be / netacad.com but not YouTube / Google )
+   \item Is it possible to set up an exam server, which is only accessible to registered students, where all the exams are submitted digitally?
+   \item Can personal applications be filtered while allowing certain necessary programs?
+   \item Can the setup of this environment be automated so every teacher can easily set up his own exam room?
+   \item Can this all be done with currently available technology or should the school invest in new equipment/software?
+  \end{itemize}
+\end{itemize}
+
+
+%---------- Stand van zaken ---------------------------------------------------
+
+\section{State-of-the-art}
+\label{sec:state-of-the-art}
+\subsection{At the University College of Ghent}
+At the University College of Ghent there are computer classrooms filled with desktops. These all have the required applications installed that are required for taking tests and/or exams. The access to the internet or certain applications is currently limited by the use of NetOp. Some exams require a teacher to be able to use such a classroom. But this puts a limitation on the amount of digital exams that can be taken at one time. This limit being equal to the amount of available computer classrooms. If teachers are brave enough to allow students to take an exam on their personal devices then the chance of fraud rises exponentially. 
+\\
+\subsection{At the Brunel University London}
+By reading the\emph{ Digital Assessment Blog} by the Brunel University of London ~\autocite{Brunel2017} we can see that other schools are trying the same thing. Here we find that they had issues as well. Their issues are not related to cheating though. The main issues they are describing is the loss of power or internet connections. These are factors that we did not account for thus far. But I believe that our system is small enough to not have these kind of problems. \\
+An other issue they describe is the fact that not all students own a personal device and have to rely on the school computer system. But in our case laptops are a must have so this issue won’t come up as much. And if it does, maybe we can configure some current desktops to work with the new environment we would build. \\
+
+\subsection{Cheating at Digital Exams}
+\emph{Aleksander Heintz} wrote his thesis on the subject of Cheating at Digital exams, Vulnerabilities and Countermeasures \autocite {Heintz2017}. He researches the way students can cheat at BYOD exams on his university. Even though his research is quite specific to their situation, he still has some interesting points. His conclusions say that there will always be ways to cheat though. Even though people will keep working on finding new ways of solving certain exploits or loop holes that students find. The students will always find a way to sidestep these solutions. But it will get harder and harder for students to do so, and so maybe we will reach a point on which it is easier for a student to just learn for the exam instead of going through a lot of trouble to cheat his way through.
+% Voor literatuurverwijzingen zijn er twee belangrijke commando's:
+% \autocite{KEY} => (Auteur, jaartal) Gebruik dit als de naam van de auteur
+%   geen onderdeel is van de zin.
+% \textcite{KEY} => Auteur (jaartal)  Gebruik dit als de auteursnaam wel een
+%   functie heeft in de zin (bv. ``Uit onderzoek door Doll & Hill (1954) bleek
+%   ...'')
+
+Je mag gerust gebruik maken van subsecties in dit onderdeel.
+
+%---------- Methodologie ------------------------------------------------------
+\section{Methodology}
+\label{sec:methodologie}
+Building a virtual network to mimic the desired situation will be a big part of the Methodology. This will be realised by using software like virtual box and Cisco Packet Tracer. Using this we'll be able to get a good idea of the desired configuration of all the devices (servers, clients, routers, ... ).
+
+% Hier beschrijf je hoe je van plan bent het onderzoek te voeren. Welke onderzoekstechniek ga je toepassen om elk van je onderzoeksvragen te beantwoorden? Gebruik je hiervoor experimenten, vragenlijsten, simulaties? Je beschrijft ook al welke tools je denkt hiervoor te gebruiken of te ontwikkelen.
+
+%---------- Verwachte resultaten ----------------------------------------------
+\section{Expected result}
+\label{sec:verwachte_resultaten}
+We expect to find a configuration for the network to limit the access to the internet. This will probably be for a Wireless Access Point (WAP). A file consisting out of configuring multiple access-lists, security settings, etc. \\
+A fully configured exam server is another result we'll expect. This may be physical or virtual using the most suited OS (a Windows version or a Linux distribution). Access to the server will be limited to certain students and the files will be sufficiently protected. The specific use of the exam server is not clear yet. It could be a simple server from which the students can download their exams and then upload them again. This is the simplest version that we can expect. But maybe other uses can be found for it. For example: making it the only accessible server on the network and hosting software on there which students can use to complete the exam. Make a service that randomises all possible questions and makes an unique exam for each student. But these are extra’s that may not come to be discussed during this bachelor thesis. 
+\\
+Automating the setup will depend of what OS is used for the exam server. If it's Linux based this will be an Ansible role. If it's Windows based it will be more difficult but doable with shell scripting, using software like chocolatey and general Windows Automation features. \\
+
+
+%---------- Verwachte conclusies ----------------------------------------------
+\section{Expected conclusions}
+\label{sec:verwachte_conclusies}
+
+Students will be able to partake in an digital exam using their own devices. The possibility to cheat will be eliminated by using a combination of techniques. This way students and teachers will have an easier way of taking examinations. Students will be comfortable with their own device. Teachers won’t have to worry about possible cheaters because this responsibility will be taken away from them. \\
+This will be realized by using a configured WAP or a similar network device that limits the access for students partaking in the examinations. The exams will be handed into a pre-configured exam server. This server is secure as well.  Meaning that students will only be able to hand in their exams during the period that it’s allowed and won’t be able to change it once it’s handed in. \\
+The cost of implementing a system like this will be minimized by automating as much as possible. This way implementation is quick and easy. And if additional servers/devices need configuring the same automatization can be used.\\
+
+
+%------------------------------------------------------------------------------
+% Referentielijst
+%------------------------------------------------------------------------------
+% TODO: de gerefereerde werken moeten in BibTeX-bestand ``biblio.bib''
+% voorkomen. Gebruik JabRef om je bibliografie bij te houden en vergeet niet
+% om compatibiliteit met Biber/BibLaTeX aan te zetten (File > Switch to
+% BibLaTeX mode)
+\phantomsection
+\printbibliography[heading=bibintoc]
+
+\end{document}

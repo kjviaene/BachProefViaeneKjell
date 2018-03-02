@@ -1,0 +1,79 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.9 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{apa/global//global/global}
+    \entry{Heintz2017}{masterthesis}{}
+      \name{author}{1}{}{%
+        {{uniquename=0,uniquepart=base,hash=fc678cee0c00fb8669d0b33776467210}{%
+           family={Heintz},
+           familyi={H\bibinitperiod},
+           given={Aleksander},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{institution}{2}{%
+        {Norwegian University of Science}%
+        {Technology}%
+      }
+      \strng{namehash}{fc678cee0c00fb8669d0b33776467210}
+      \strng{fullhash}{fc678cee0c00fb8669d0b33776467210}
+      \strng{bibnamehash}{fc678cee0c00fb8669d0b33776467210}
+      \strng{authorbibnamehash}{fc678cee0c00fb8669d0b33776467210}
+      \strng{authornamehash}{fc678cee0c00fb8669d0b33776467210}
+      \strng{authorfullhash}{fc678cee0c00fb8669d0b33776467210}
+      \field{sortinit}{H}
+      \field{sortinithash}{5f15a7bc777ad49ff15aa4d2831b1681}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Cheating at Digital Exams Vulnerabilities and Countermeasures}
+      \field{year}{2017}
+    \endentry
+    \entry{Brunel2017}{article}{}
+      \name{author}{1}{}{%
+        {{uniquename=0,uniquepart=base,hash=a0a3488869547d736d686f36a1ecef09}{%
+           family={London},
+           familyi={L\bibinitperiod},
+           given={Brunel\bibnamedelima University},
+           giveni={B\bibinitperiod\bibinitdelim U\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{a0a3488869547d736d686f36a1ecef09}
+      \strng{fullhash}{a0a3488869547d736d686f36a1ecef09}
+      \strng{bibnamehash}{a0a3488869547d736d686f36a1ecef09}
+      \strng{authorbibnamehash}{a0a3488869547d736d686f36a1ecef09}
+      \strng{authornamehash}{a0a3488869547d736d686f36a1ecef09}
+      \strng{authorfullhash}{a0a3488869547d736d686f36a1ecef09}
+      \field{sortinit}{L}
+      \field{sortinithash}{2c7981aaabc885868aba60f0c09ee20f}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Digital Assessment Blog}
+      \field{year}{2017}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
