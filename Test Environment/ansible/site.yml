@@ -1,0 +1,44 @@
+# site.yml
+---
+- hosts: all
+  become: true
+  roles:
+    - bertvv.rh-base
+    - nbigot.fail2ban
+
+- hosts: pu004
+  become: true
+  roles:
+    - bertvv.httpd
+    - bertvv.MariaDB
+    - bertvv.wordpress
+
+- hosts: pu001, pu002
+  become: true
+  roles:
+    - bertvv.bind
+
+- hosts: pr011
+  become: true
+  roles:
+    - bertvv.samba
+    - bertvv.vsftpd
+  post_tasks:
+    - name: management to sales
+      acl:
+        path: /srv/shares/sales
+        entity: management
+        etype: group
+        permissions: rx
+        state: present
+    - name: management to it
+      acl:
+        path: /srv/shares/it
+        entity: management
+        etype: group
+        permissions: rx
+        state: present
+- hosts: pr001
+  become: true
+  roles:
+    - bertvv.dhcp
