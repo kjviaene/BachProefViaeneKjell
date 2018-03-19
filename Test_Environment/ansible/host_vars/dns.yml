@@ -1,0 +1,29 @@
+# host_vars/pu001.yml
+# Variables visible to pu004
+---
+rhbase_firewall_allow_services:
+  - dns
+bind_zone_master_server_ip: 172.16.0.10
+
+bind_zone_name: avalon.lan
+bind_zone_networks:
+  - '192.0.2'
+  - '172.16.0'
+bind_zone_name_servers:
+  - dns
+bind_zone_hosts	:
+  - name: dns
+    ip: 172.16.2.10
+    aliases:
+      - ns1
+  - name: samba
+    ip: 172.16.0.11
+    aliases:
+      - files
+  - name: ws0001
+bind_listen_ipv4:
+  - any
+bind_allow_query:
+  - any
+bind_forwarders:
+  - '192.0.2.10'

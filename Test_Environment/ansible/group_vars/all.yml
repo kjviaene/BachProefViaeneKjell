@@ -1,13 +1,6 @@
 # group_vars/all.yml
 # Variables visible to all nodes
 ---
-#rhbase_firewall_allow_services:
-#  - http
-#  - https
-#  - dns
-#  - samba
-#  - ftp
-#  - dhcp
 
 rhbase_install_packages:
   - bash-completion
@@ -17,7 +10,6 @@ rhbase_install_packages:
   - tree
   - vim-enhanced
   - wget
-  - sendmail
 rhbase_users:
   - name: kjell
     comment: 'kjell admin'
@@ -29,14 +21,7 @@ rhbase_users:
 rhbase_motd: true
 rhbase_ssh_user: kjell
 rhbase_ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDZPEMjMqykH4OO70pxRVDi9mNuSa2StnZM3PdMgeRhsKck9g3JNSovGft4smUcrb/VYDYaCYqOnmxm2tQNHHkg+RUEMEqE05Bh9IhKnnD+1qEsjNn+PUtu7kOGr2xHthQvzMO6kLTFrPHFNlTp9CvkhwwDAq4VRDNUa9N+QNyHpNWnIoupNxqfrDWSUXlzSAA4OVZOwKOwscgp/VjsDODNLqMkJoqkvg49/Nnq6XWoc9bQ1LSJRP9be1uGvY7zBF2vGVKEVT+G/s2JlAjyF/JikGlL/BXeLMOLnMhDeBX2r6ycsQ25zMGBlVtzSOzXhJLjstnUKUTki9inGgCfVVx/ Kjell@Kjell-Desktop
-fail2ban_ignoreips:
-  - 127.0.0.1/8
-  - 172.16.0.0/16
-fail2ban_bantime: 120
-fail2ban_maxretry: 2
-fail2ban_action: "%(action_mwl)s"
-fail2ban_sender: 'fail2ban@local.local'
-fail2ban_destemail: 'kjellgames@hotmail.be'
+
 
 
 #  - 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC1n+2DpDkTVTeDoWuH8Tag4rcFIkgE7Zc+MSFbB1EwBILpWTRFVURUwgyKmC+26gKJoBxkuYRJCgBN6nzOHpcXRFrBNy2sC36nkuzxaAy6Nlxao3JQ7DK8+C3UX7GfkZsPmj+Rq820k21mbMo8ET+qQENrd4xsjaMrobV2ZAhWkoFf1dYIzTlJj+x1MUlTlJmTizBTNEns46LemK58EZ/3ajuI0Kf4NudvNbIl7kwDAzuqlaZUiu/pgjOhc+22fzi/HTZm3WAVcMvTHm31SHETNJ/xNImalD37TW8PB9MKqFTMrq+rUXTdrXZ843TdaVVEloqo+H0WUZQfjFwvGOxT Kjell@Kjell-Desktop

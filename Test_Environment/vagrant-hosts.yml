@@ -25,10 +25,10 @@
 #
 # [1] http://docs.vagrantup.com/v2/synced-folders/basic_usage.html
 ---
-- name: pr011
+- name: samba
   ip: 172.16.0.11
   netmask: 255.255.0.0
-  
-- name: pu001
-  ip: 192.0.2.10
-  netmask: 255.255.255.0
+
+- name: dns
+  ip: 172.16.0.10
+  netmask: 255.255.0.0

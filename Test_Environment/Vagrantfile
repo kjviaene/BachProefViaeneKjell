@@ -85,16 +85,11 @@ end
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.ssh.insert_key = false
-#   VyOS Router, comment line 89-104 if you want the PFSense router/Firewall to be build.
   config.vm.define 'router' do |router|
     router.vm.box = 'bertvv/vyos116'
     router.vm.network :private_network,
       ip: '192.0.2.254',
       netmask: '255.255.255.0',
-      auto_config: false
-    router.vm.network :private_network,
-      ip: '172.16.255.254',
-      netmask: '255.255.0.0',
       auto_config: false
     router.ssh.insert_key = false
 
@@ -102,33 +97,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       sh.path = "scripts/router-config.sh"
     end
   end
-  #PFSense firewall, comment line 106 -  131 If you want the VYoS router to be build.
-#  config.vm.define 'firewall' do |firewall|
-#    firewall.vm.box = 'kennyl/pfsense'
-#    firewall.ssh.username = 'vagrant'
-#    firewall.ssh.password = 'vagrant'
-#    firewall.ssh.shell = '/bin/sh'
-#    firewall.vm.guest = 'freebsd'
-#    firewall.vm.synced_folder ".", "/vagrant", disabled: true
-#    firewall.vm.network :private_network,
-#      ip: '172.16.0.4',
-#      netmask: '255.255.0.0',
-#      auto_config: false
-#    firewall.vm.network :private_network,
-#      ip: '192.0.2.253',
-#      netmask: '255.255.255.0',
-#      auto_config: false
-#    firewall.ssh.insert_key = false
-
-#    firewall.vm.provision "file" do |fil|
-#      fil.source = "scripts/FirewallScript"
-#      fil.destination = "/home/vagrant/"
-#    end
-
-  #  firewall.vm.provision "shell" do |sh|
-  #    sh.path = "scripts/FirewallScript/firewall-config.sh"
-  #  end
-#  end
   hosts.each do |host|
     config.vm.define host['name'] do |node|
       node.vm.box = host['box'] ||= DEFAULT_BASE_BOX

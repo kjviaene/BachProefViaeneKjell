@@ -4,21 +4,13 @@
   become: true
   roles:
     - bertvv.rh-base
-    - nbigot.fail2ban
 
-- hosts: pu004
-  become: true
-  roles:
-    - bertvv.httpd
-    - bertvv.MariaDB
-    - bertvv.wordpress
-
-- hosts: pu001, pu002
+- hosts: dns
   become: true
   roles:
     - bertvv.bind
 
-- hosts: pr011
+- hosts: samba
   become: true
   roles:
     - bertvv.samba
@@ -38,7 +30,3 @@
         etype: group
         permissions: rx
         state: present
-- hosts: pr001
-  become: true
-  roles:
-    - bertvv.dhcp
