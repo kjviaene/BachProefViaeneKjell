@@ -19,7 +19,7 @@ test/bats/
 *.box
 
 # Ignore role directories from Ansible Galaxy (user.role notation)
-ansible/roles/*.*
+Test_Environment/ansible/roles/*.*
 
 # Ignore ISO's
 *.iso
