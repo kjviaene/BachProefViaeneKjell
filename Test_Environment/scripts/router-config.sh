@@ -41,9 +41,9 @@ set system time-zone Europe/Brussels
 #
 # Domain Name Service
 #
-set system name-server 10.0.2.3
+set system name-server 172.16.0.10
 set service dns forwarding system
-set service dns forwarding domain avalon.lan server 172.16.0.10
+set service dns forwarding domain hogent.be server 10.0.2.3
 set service dns forwarding listen-on 'eth1'
 
 # Make configuration changes persistent

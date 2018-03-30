@@ -10,6 +10,11 @@
   roles:
     - bertvv.bind
 
+- hosts: dhcp
+  become: true
+  roles:
+    - bertvv.dhcp
+
 - hosts: samba
   become: true
   roles:

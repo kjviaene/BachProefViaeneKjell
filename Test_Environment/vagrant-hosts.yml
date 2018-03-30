@@ -32,3 +32,8 @@
 - name: dns
   ip: 172.16.0.10
   netmask: 255.255.0.0
+
+- name: dhcp
+  ip: 172.16.0.12
+  netmask: 255.255.0.0
+  

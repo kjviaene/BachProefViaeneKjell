@@ -1,5 +1,5 @@
 # host_vars/pu001.yml
-# Variables visible to pu004
+# Variables visible to dns
 ---
 rhbase_firewall_allow_services:
   - dns
@@ -20,7 +20,11 @@ bind_zone_hosts	:
     ip: 172.16.0.11
     aliases:
       - files
-  - name: ws0001
+  - name: dhcp
+    ip: 172.16.0.12
+    aliases:
+      - internal
+
 bind_listen_ipv4:
   - any
 bind_allow_query:
