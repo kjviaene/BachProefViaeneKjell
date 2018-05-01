@@ -43,6 +43,7 @@ set system time-zone Europe/Brussels
 #
 set system name-server 172.16.0.10
 set service dns forwarding system
+#Only allow dns requests for the specified domain to go through
 set service dns forwarding domain hogent.be server 10.0.2.3
 set service dns forwarding listen-on 'eth1'
 

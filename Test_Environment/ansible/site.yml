@@ -9,6 +9,7 @@
   become: true
   roles:
     - bertvv.bind
+  #  - bertvv.dnsmasq
 
 - hosts: dhcp
   become: true
@@ -20,18 +21,36 @@
   roles:
     - bertvv.samba
     - bertvv.vsftpd
+#    - elaoInfra.acl
   post_tasks:
-    - name: management to sales
+    - name: teachers all access in ExaminationFiles
       acl:
-        path: /srv/shares/sales
-        entity: management
+        path: /srv/shares/ExaminationFiles
+        entity: teachers
+        etype: group
+        permissions: rwx
+        state: present
+        default: yes
+    - name: students read access in ExaminationFiles
+      acl:
+        path: /srv/shares/ExaminationFiles
+        entity: students
         etype: group
         permissions: rx
         state: present
-    - name: management to it
-      acl:
-        path: /srv/shares/it
-        entity: management
-        etype: group
-        permissions: rx
-        state: present
+        default: yes
+      - name: students prohibit access in Teachers folder
+        acl:
+          path: /srv/shares/Teachers
+          entity: students
+          etype: group
+          permissions: ---
+          state: present
+          default: yes
+#    - name: management to it
+#      acl:
+#        path: /srv/shares/it
+#        entity: management
+#        etype: group
+#        permissions: rx
+#        state: present

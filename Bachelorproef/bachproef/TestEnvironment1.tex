@@ -2,6 +2,7 @@
 %% Voorwoord
 %%=============================================================================
 
+
 \chapter*{Building the first test environment}
 \label{ch:TestEnvironment1}
 
@@ -10,3 +11,30 @@
 %% eigen standpunt (``ik-vorm'') mag schrijven. Je kan hier bv. motiveren
 %% waarom jij het onderwerp wil bespreken.
 %% Vergeet ook niet te bedanken wie je geholpen/gesteund/... heeft
+\section{Planning the test environment}
+The initial test environment existed out of a VyOS router, a windows 10 workstation and a CentOS based BIND DNS server. The setup of this environment was automated with the use of vagrant and Ansible. The necessary scrips to make this happened were picked from the course \'' Enterprise Linux \''. These were originally put together by Bert Van Vreckem. The most importan files are the following:
+\begin{itemize}
+\item The \'' role-deps.sh\'' script. This scrpt is responsible for being able to install ansible roles on a windows machine. So that these may be installed on the correct machines.
+\item The\'' playbook-win.sh \'' script which makes it possible for a windows machine to work with ansible. It installs the playbook onto the correct Linux machine and runs it locally there.
+\item The \'' Vagrantfile \''. In this file the base box is set to CentOs, it is responsible for executing the previous script on all the machines that are mentioned in the \'' Vagrant Hosts \'' file. It also checks wether the host is a Linux/Mac host or a Windows host and acts accordingly. There is a specific version to provision the router. The VyOs router can't be configured by Ansible. Instead it runs a script that is also located in vagrant folder. Simply running this script configures the router.
+\end {itemize}
+
+\section{ Choice of the router Operating System }
+There are 3 big candidates to be used as OS for the router. Vyos, PFSense and cisco. All three have their pros and cons. In the test environment a Vyos Router was chosen above the other two.
+\subsection{ Cisco router}
+In the school all routers and switches being used are using the cisco OS. It has a wide variety of supported protocols. It has a lot of support available as it is the biggest players when it comes to Enterprise networking. The networking classes that are taught are based on Netacad courses which are made by cisco are based on cisco systems. In conclusion, it's the only logical choice to make to use inside of the school. \\
+In this Test Environment however, it's a different story. As an individual buying a license for a cisco device is extremely pricey. Buying a license just to be able to test a router in a test environment would be a ridiculous waste of money.There are no special offers available at this time for students to use cisco OS with a student license or anything of the like. \\
+Considering that the functionalities that are going to be used on the router are quite basic it's a quick decision to make. Picking a free OS for the purpose of builiding this environment is the only choise that's feasable.
+\subsection { PFSense routing }
+The two big names one comes across when searching for free routing operating systems are PFSense and VYoS. First and Foremost pfSense is a firewall. Which is not what was needed in this setup. PFSense started out as being an other routing system but it diveted from that path. This alone is not a problem in this situation at hand. It may even be better considering the purpose here is to protect our network from and to the outside. \\
+The first argument against however is the fact that PFSense is FreeBSD and is configured using GUI. This may seem positive for most, but the fact that our setup is automated makes every OS which is GUI based a struggle. There is of course a CLI available, but to be able to work with it requires a lot of knowledge and practice. \\
+The second argument againt PFSense is an argument based on the previous one. The fact that in the school cisco routers are used means that all those routers are configured via CLI. Using a router in our test environment that is based on GUI would be quite a big difference. If one would want to copy the configuration of a PFSense machine to cisco machine, a wall would be hit. The configuration of a PFSense machine can only be downloaded using an .XML file. Which has no use in a cisco router and means one would just have to re-configure the whole system.
+\subsection { VyOs router }
+A router running on vyos is the one being used in the test environment. The vyos router was chosen mainly because it is an operating system based on unix and it is configured via a CLI.
+A lot of commands used in a vyos router actually have meaning in the cisco OS. The way of working with a vyos router is very comparable to working with a cisco router. And this is very important  to this situation. The test environment has to be representative of the real situation. And a vyos router is getting very close to a cisco router. As in the way that it feels and looks. This statement is not true when comparing the two systems in perfomance and possibilities of course. But that is not important in this case.
+
+%https://www.cisco.com/c/en/us/support/docs/ios-nx-os-software/ios-software-releases-110/13178-15.html
+
+%https://amigobulls.com/articles/cisco-maintains-switching-router-market-share-despite-revenue-declines
+
+%https://doc.pfsense.org/index.php/Configuration_Backup_and_Restore

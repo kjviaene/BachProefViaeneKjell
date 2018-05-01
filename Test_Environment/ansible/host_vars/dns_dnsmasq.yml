@@ -1,0 +1,16 @@
+# host_vars/pu001.yml
+# Variables visible to dns
+---
+rhbase_firewall_allow_services:
+  - dns
+
+#Domein
+dnsmasq_domain: 'avalon.lan'
+# Authoritative voor avalon.lan
+dnsmasq_authoritative: true
+# Zorgt ervoor dat dns requests voor avalon.lan nooit worden geforward
+dnsmasq_bogus_priv: true
+# interface waar wordt geluisterd naar dns requests
+dnsmasq_listen_address: 172.16.0.10
+#Default gateway to propagate
+dnsmasq_option_router: 172.16.255.254

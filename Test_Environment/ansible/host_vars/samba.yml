@@ -5,9 +5,8 @@ rhbase_firewall_allow_services:
   - samba
   - ftp
 rhbase_user_groups:
-  - management
-  - technical
-  - sales
+  - students
+  - teachers
   - it
   - public
 
@@ -19,154 +18,61 @@ rhbase_users:
       - it
       - public
     password: '$6$0xjjA9VH39Vm0STt$z.sDAJlxbSyWmQPl4VpQ8fjOGV2q2YCC29sjBUAMzHt/VjT9vYCroQDJUg8Y4VhZnrjm0HYCzZawtA37VO11V.'
-  - name: stevenh
-    comment: 'Steven Hermans - CEO'
+  - name: docent
+    comment: 'docent'
     groups:
       - public
-      - management
-    password: '$5$.DXgvzc9jRHHHDsd$UwgHOzd0wC0DF1NaF15zwR/W8dtvRTB44nV0UBnOB02'
+      - teachers
+    password: '$5$5Y0SjamA7UOfdIZ/$jSMWrseohxzERb62/a1rLyn9uUmWc.1sniX2oS2xGQA'
+  - name: student
+    comment: 'student'
+    groups:
+      - public
+      - students
+    password: '$5$P7FWl9GjMdxD.Wcu$LIZ.eH90JI1/LTB/FNC0YXgA0eXk.31ung7ZaMXnrS1'
     shell: /sbin/nologin
-  - name: stevenv
-    comment: 'Steven Van Daele - Software Engineer'
+  - name: student2
+    comment: 'student2'
     groups:
       - public
-      - technical
-    password: '$5$vQmOl8B7s9DOr003$VcmDIX4MUYBfUJBRwaBV9wEFixsfldFKOV1ro3t5dQ4'
-    shell: /sbin/nologin
-  - name: leend
-    comment: 'Leen De Meester - Software Engineer'
-    groups:
-      - public
-      - technical
-    password: '$5$A9NHVgENmUlkRvEa$0NlJJXa7uMcriBoIMHy5gn/4EYs4loQWLaJ1.flkIFD'
-  - name: svena
-    comment: 'Sven Aerens - Account Manager'
-    groups:
-      - public
-      - sales
-    password: '$5$ck1Ns6ccS5mUUZhB$zUvzQQQzw1XPjWApZP4OhFyZ63AFioLGihjgrSZOyX3'
-    shell: /sbin/nologin
-  - name: nehirb
-    comment: 'Nehir Baayar - System Engineer'
-    groups:
-      - public
-      - it
-    password: '$5$CkX6/r65M6YZ9SrZ$AnmSegf0rOc2EwYVf4IRlM.XcQw3dtqczW8NP3tV07/'
-  - name: alexanderd
-    comment: 'Alexander De Coninck - Software Engineer'
-    groups:
-      - public
-      - technical
-    password: '$5$kPteGTVuLYi/PoxG$uIR3vYOtN7sJOa02UnBnmyoAMYRTXGPTzBSw7ey6kW0'
-    shell: /sbin/nologin
-  - name: krisv
-    comment: 'Kris Vanhaverbeke- CFO'
-    groups:
-      - public
-      - management
-    password: '$5$l4Y1xcUjheU.NjgA$odhEkhlnE.o15mFNhieayFBX3Exn/T79whTNAK/Hwq5'
-    shell: /sbin/nologin
-  - name: benoitp
-    comment: 'Benoit Pluquet - Account Manager'
-    groups:
-      - public
-      - sales
-    password: '$5$.OE8tb45zfHN8KGH$kxtCQ1nT7AZ9HxBIBKWctzPBgG6OwXYd6pMXaRmc7LB'
-    shell: /sbin/nologin
-  - name: anc
-    comment: 'An Coppens - Graphical Designer'
-    groups:
-      - public
-      - technical
-    password: '$5$6ldQsTvncQtWaSbf$Pwb16HYWmFrqRUnaXmoTfOhzcXxVlGzvrxjZ0b5a7d4'
-    shell: /sbin/nologin
-  - name: elenaa
-    comment: 'Elena Andreev - Office Manager'
-    groups:
-      - public
-      - management
-    password: '$5$zbHe.req.5f7uZaP$psWHuvHeufFLpTAB0uvhxckJhcTg.YVFNbY71Op4n42'
-    shell: /sbin/nologin
-  - name: evyt
-    comment: 'Evy Tilleman - Technical Writer'
-    groups:
-      - public
-      - technical
-    password: '$5$OA9.hJeqjI0itwFS$xeSv5Ih.T5BYvaj9Wfwu/IGoCE1fsi7EzIJaN7hjBA2'
-    shell: /sbin/nologin
-  - name: christophev
-    comment: 'Christophe Van der Meersche - System Administrator'
-    groups:
-      - public
-      - it
-    password: '$5$wAPXZCp7HNhhj8Sz$m6tXGfmWUgwmtW3kcFbdBkcsMcGcgt9kgJllSJimnR9'
-  - name: stefaanv
-    comment: 'Stefaan Vernimmen - Support Specialist'
-    groups:
-      - public
-      - technical
-    password: '$5$tg.vwwVyn2CDZ/4i$VFg/MVdW4oJYZFNj59VGucVrZkCSe6bCSRcrGAQbmm2'
+      - students
+    password: '$5$P7FWl9GjMdxD.Wcu$LIZ.eH90JI1/LTB/FNC0YXgA0eXk.31ung7ZaMXnrS1'
     shell: /sbin/nologin
 samba_users:
   - name: kjell
     password: test
-  - name: stevenh
-    password: stevenh
-  - name: stevenv
-    password: stevenv
-  - name: leend
-    password: leend
-  - name: svena
-    password: svena
-  - name: nehirb
-    password: nehirb
-  - name: alexanderd
-    password: alexanderd
-  - name: krisv
-    password: krisv
-  - name: benoitp
-    password: benoitp
-  - name: anc
-    password: anc
-  - name: elenaa
-    password: elenaa
-  - name: evyt
-    password: evyt
-  - name: christophev
-    password: christophev
-  - name: stefaanv
-    password: stefaanv
+  - name: docent
+    password: teacher
+  - name: student
+    password: student
 samba_shares:
-  - name: management
-    comment: 'Share folder for management'
-    group: management
-    valid_users: +management
-    write_list: +management
-    directory_mode: '770'
-  - name: technical
-    comment: 'Share folder for technical'
-    group: technical
-    valid_users: +public
-    write_list: +technical
-  - name: sales
-    comment: 'Share folder for sales'
-    group: sales
-    valid_users: +management,+sales
-    write_list: +sales
-    directory_mode: '770'
-  - name: it
-    comment: 'Share folder for it'
-    group: it
-    valid_users: +management,+it,+wheel
-    write_list: +it,+wheel
-    directory_mode: '770'
-  - name: public
-    comment: 'Share folder for public'
+  - name: HandIn
+    comment: 'Share folder to hand in examinations'
     group: public
-    valid_users: +public
-    write_list: +public
+    valid_users: +students,+teachers,+it
+    write_list: +students,+teachers,+it
+    create_mode: '1775'
+    force_create_mode: '1775'
+    directory_mode: '1775'
+    force_directory_mode : '1775'
+  - name: ExaminationFiles
+    comment: 'Share folder where students can find the exams'
+    group: public
+    valid_users: +students,+teachers,+it,+public
+    write_list: +teachers
+    create_mode: '0775'
+    force_create_mode: '0775'
+    directory_mode: '0775'
+    force_directory_mode : '0775'
+
+  - name: Teachers
+    comment: 'Share folder for teachers, files with account info etc.'
+    group: teachers
+    valid_users: +teachers,+it
+    write_list: +teachers,+it
+    #directory_mode: '770'
 samba_workgroup: avalon
-samba_netbios_name: FILES
+samba_netbios_name: EXAMINATION
 samba_load_homes: true
 sambe_load_printers: false
 vsftpd_anonymous_enable: false
@@ -174,3 +80,9 @@ vsftpd_local_enable: true
 vsftpd_write_enable: true
 vsftpd_local_umask: '007'
 vsftpd_local_root: '/srv/shares/'
+#elao_acl_files:
+#    - name:        /srv/shares/ExaminationFiles
+#      entity:      students
+#      etype:       other
+#      permissions: "rx"
+#      state:       present

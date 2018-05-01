@@ -27,6 +27,9 @@
 \usepackage[english,dutch]{babel}    % Taalinstellingen: woordsplitsingen,
                              %  commando's voor speciale karakters
                              %  ("dutch" voor NL)
+                             
+
+\usepackage{listings}
 \usepackage{iflang}
 \usepackage{eurosym}         % Euro-symbool €
 \usepackage{geometry}
@@ -34,6 +37,8 @@
 \graphicspath{{img/}}       % Specifies the directory where pictures are stored
 \usepackage{tikz}            % Required for drawing custom shapes
 \usepackage[pdftex,bookmarks=true]{hyperref}
+\usepackage{titlesec}
+\usepackage[most]{tcolorbox}
                              % PDF krijgt klikbare links & verwijzingen,
                              %  inhoudstafel
 \usepackage{enumitem}        % Customize lists
@@ -48,6 +53,7 @@
 \definecolor{maincolor}{RGB}{0,147,208} % Define the main color used for 
                              % highlighting throughout the book
                              % 0, 147, 208 = officiële kleur HoGent FBO
+\newtcblisting{cisco}[1][]{size=fbox, listing only, listing options={style=tcblatex,basicstyle=\ttfamily\scriptsize,tabsize=2,language=sh},#1}
 
 % Paragraph style: no indent, add space between paragraphs
 \setlength{\parindent}{0em}
