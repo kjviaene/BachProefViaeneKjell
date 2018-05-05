@@ -29,6 +29,7 @@ set interfaces ethernet eth1 description inside
 # Network Address Translation
 #
 set nat source rule 100 outbound-interface eth0
+set nat source rule 100 source address '172.16.0.0/16'
 set nat source rule 100 translation address masquerade
 
 #
@@ -41,12 +42,39 @@ set system time-zone Europe/Brussels
 #
 # Domain Name Service
 #
-set system name-server 172.16.0.10
+#set system name-server 172.16.0.10
+#set service dns forwarding system
+##Only allow dns requests for the specified domain to go through
+#set service dns forwarding domain hogent.be server 10.0.2.3
+#set service dns forwarding listen-on 'eth1'
+### BACHELORPROEF CONFIGURATION
+set system name-server 10.0.2.3
 set service dns forwarding system
-#Only allow dns requests for the specified domain to go through
-set service dns forwarding domain hogent.be server 10.0.2.3
+set service dns forwarding domain avalon.lan server 172.16.0.10
 set service dns forwarding listen-on 'eth1'
+##Firewall Settings / acl's
+## The group you want to apply the rules to
+#set firewall group network-group INSIDE-NET network 172.16.0.0/16
+#set firewall group address-group SCHOOL-NET address 178.62.144.90
+#set firewall group address-group SCHOOL-NET address 193.190.173.131
+## The group of things you want to block/allow
+#set firewall group port-group TCP-ACCESS port 80
+#set firewall group port-group TCP-ACCESS port 443
+## Creating the rules of your Firewall
+#set firewall name ACCESS-CONTROL description 'Blocking unwanted sites'
+#set firewall name ACCESS-CONTROL default-action drop
+#set firewall name ACCESS-CONTROL rule 200 action drop
+#set firewall name ACCESS-CONTROL rule 200 destination group port-group TCP-ACCESS
+#set firewall name ACCESS-CONTROL rule 200 source group network-group INSIDE-NET
+#set firewall name ACCESS-CONTROL rule 200 state established enable
+#set firewall name ACCESS-CONTROL rule 200 state related enable
+#set firewall name ACCESS-CONTROL rule 100 action accept
+#set firewall name ACCESS-CONTROL rule 100 destination group address-group SCHOOL-NET
+#set firewall name ACCESS-CONTROL rule 200 state established enable
+#set firewall name ACCESS-CONTROL rule 200 state related enable
 
+# Applying the rule set
+#set interfaces ethernet eth0 firewall out name ACCESS-CONTROL
 # Make configuration changes persistent
 commit
 save

@@ -8,8 +8,8 @@
 - hosts: dns
   become: true
   roles:
-    - bertvv.bind
-  #  - bertvv.dnsmasq
+  #  - bertvv.bind
+    - bertvv.dnsmasq
 
 - hosts: dhcp
   become: true
@@ -39,14 +39,14 @@
         permissions: rx
         state: present
         default: yes
-      - name: students prohibit access in Teachers folder
-        acl:
-          path: /srv/shares/Teachers
-          entity: students
-          etype: group
-          permissions: ---
-          state: present
-          default: yes
+    - name: students prohibit access in Teachers folder
+      acl:
+        path: /srv/shares/Teachers
+        entity: students
+        etype: group
+        permissions: ---
+        state: present
+        default: yes
 #    - name: management to it
 #      acl:
 #        path: /srv/shares/it
