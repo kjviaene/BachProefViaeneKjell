@@ -118,14 +118,54 @@ This little piece of code allows HTTP requests to pass through the eth0 interfac
 So what is the result of these settings? When now connecting to the network the user is able to connect to the domain that we specified (hogent.be) but gets an error whenever trying to connect to any other website. So the goal that was set has been reached. Directly surfing to the IP of the website does not resolve anything as the router does not care how the user connects to a website, it blocks it either way. There are of course ways to circumvent this system (like using a VPN) but the easiest ways of cheating have been prevented. Although nothing has been done against files locally on the computer. It is worth mentioning as well that everything within the own network is still available. Possible file servers can still be reached and function as needed.
 \section{Dns Whitelisting}
 \subsection{Installing DnsMasq}
+To use this method the installation of dnsmasq is required. Dnsmasq is an easy way of configuring a DNS and DHCP server. The DHCP functions are of no importance here and will not be implemented or installed. These are disabled by default upon the installation of dnsmasq. When working in larger networks it is advised to not just use dnsmasq but combine it with an other service like BIND. Dnsmasq is supported on Linux, Android,BSD and Mac OS X platforms. The installation of dnsmasq itself is pretty straightforward. You execute the ``apt-get update`` command followed by ``àpt-get install dnsmasq`` or use ``yum`` on non Debian systems. Restarting the service after installation or configuration is always a good idea. This can be achieved by issuing the ``sudo service dnsmasq force-reload`` command. Once installed be sure to check your firewall and SELinux settings. These might block traffic that is needed for our DNS service to work. If this is the case, adjust those appropriately. \\
+If automation of the installation is required, there are plenty of Dnsmasq roles available for Ansible. Most of these do easily allow the configuration that is required in this setup and for that reason in this example all the configurations were made manually.
+\subsection{Configuring Dnsmasq}
+The first configuration that was made was actually to the router. It is important for this method to work to make sure that the router in the network does not forward requests on its own. The router was configured to only use the local DNS server. It was also configured that no ACL was blocking DNS requests, as the local DNS server will still send requests out for those domains that are allowed.\\
+The first and most important file that is configured is the \textit{``/etc/dnsmasq.conf``} file. This file already contains a lot of lines, those will be left out here and only the lines that are of importance to our situation are shown. The content of ``dnsmasq.conf`` is the following:
+\begin{cisco}[title=dnsmasq.conf file]
+domain=example.lan
+dhcp-option=option:router,172.16.255.254
+interface=enp0s8
+listen-address=172.16.0.10
 
+domain-needed
+no-resolv
+log-queries
+expand-hosts
 
+server=/hogent.be/10.0.2.3
+server=/serverfault.com/10.0.2.3
 
+address=/#/127.0.0.1
 
-
-
-
-
-
+conf-dir=/etc/dnsmasq.d
+\end{cisco}
+Every line has its own purpose:
+\begin{itemize}
+\item The first line sets the domain name in which our server is located. This is not necessary and is mostly a feature that is used if you configure DHCP settings as well. But it is also required when the option ``expand-hosts`` is set. Which will be touched upon later.
+\item Dhcp-option allows for a lot of configuration. The only one used here is the option which overrides the default router that dnsmasq has configured. By default this is the IP-Address of the same machine that is running dnsmasq. In our case this is not correct so it was adjusted to fit our network. If the router is actually the same machine, then of course no configuration is required here.
+\item The interface configuration sets the interface on which the DNS server should listen for requests. This should be pretty easy to figure out. Generally speaking you do not want the server to listen on any WAN ports. If there is a situation in which the server has a lot of interfaces and it is easier to mention those interfaces on which you do not want the server to listen, you can make use of the ``except-interface=`` option.
+\item The listen-address option does the same as the interface option. Only here the interface is defined by the IP-Addressed assigned to it. So only use this when the IP is static.
+\item ``domain-needed`` ensures that every requests is a full name. No requests of simple names will be resolved (for instance google instead of google.com)
+\item ``no-resolv`` is the most important configuration to make when using this method. It ensures us that dnsmasq will not look at ``/etc/resolv.conf`` to resolve requests. It will only look at the servers specified later in the dnsmasq.conf file. More clarification on these follows. So basically it disables DNS forwarding
+\item ``log-queries`` is just useful to have enabled. It logs all queries in `` /var/log/daemon.log`` which makes it easier to debug when necessary.
+\item ``expand-hosts``  is an other useful option to have enabled. It automatically adds the domain set in the domain option to all simple names that are added in the hosts-file.
+\item The next portion of the file binds certain domains to certain name servers. In our case this is literally our whitelist. Every site here (hogent.be,serverfault.com) will be resolved using the server mentioned behind it. Which in this case is \textit{10.0.2.3}, the default DNS IP-Address forvirtualbox. By doing this, the specified domains will not get translated by the local hosts file but the request will be forwarded. Which is exactly what we want.
+\item The next to last option ``address=/\#/127.0.0.1`` makes it so that all other requests (\#) are directed to the local server. Which means that connections to all domains which are not actually located at \textit{127.0.0.1} will fail. Which was our goal.
+\item Finally the option ``conf-dir=`` allows to set an other configuration file that should be looked at. This can be usefull if you want to be able to quickly switch between a blocked network and a not blocked network. You could for instance make a general configuration file which has the general settings (domain,interface,...) and then point to an other conf file. The other config file would be a file with all the options which restrict access to the internet. While a third config file could be made where all settings are set so internet access works as normal. This enables you to adjust limitations by just changing one line in one file. Instead of having the chance/commenting all the settings each time you want to switch. (In this example it just points to an empty directory)
+\end{itemize}
+After setting these options websites will not work anymore, except if they are listed with their own name server. To be able to still translate local addresses you'll need to add those to the hosts file which is located at ``/etc/hosts``. This should look along the lines of this:
+\begin{cisco}[title=/etc/hosts file]
+172.16.0.10 dns.example.lan
+172.16.0.11 samba.example.lan
+172.16.0.12 dhcp.example.lan
+172.16.0.13 web.example.lan
+\end{cisco}
+If this is done right, the users will still be able to reach all the necessary server (file server for instance) while still being blocked from unauthorized websites.
+\subsection{Effectiveness/conclusion}
+It is harder for students to reach certain websites. But while testing this it is possible to reach certain websites when the IP-Address is known and they are added to the local hosts file of the students personal device. However surprisingly a lot of websites do not allow acces via IP and actually require you to use a DNS server. So while it is probably the easiest method of all the ones seen here to get around, it's still not child's play.
+\section{Firewall PFSense}
+\subsection{Setting up the firewall}
 
 %SOURCE VYOS: https://app.vagrantup.com/bertvv/boxes/vyos116
