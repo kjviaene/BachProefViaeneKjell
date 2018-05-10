@@ -167,5 +167,45 @@ If this is done right, the users will still be able to reach all the necessary s
 It is harder for students to reach certain websites. But while testing this it is possible to reach certain websites when the IP-Address is known and they are added to the local hosts file of the students personal device. However surprisingly a lot of websites do not allow acces via IP and actually require you to use a DNS server. So while it is probably the easiest method of all the ones seen here to get around, it's still not child's play.
 \section{Firewall PFSense}
 \subsection{Setting up the firewall}
+As mentioned multiple times, the firewall is a PFSense firewall which is based on FreeBSD and is free open source software. It functions not only as a firewall, but as a router as well. In the setup used the firewall replaces our Vyos router because this is was considerably easier to deploy. The firewall has 2 interfaces (which is the minimum required), one WAN interface which gets its IP dynamically from a DHCP server. The second interface is a LAN interface which gets the IP \textit{172.16.255.254} in the network. It functions as the default gateway for all connected devices. When deploying a PFSense machine, these are the only things required before the setup is completed, the assigning of the interfaces. If there are VLANS, they need to be configured as well. But they can always be added later on. The interfaces can of course be adjusted as well. When these are all configured, access to the physical device is no longer needed and continuation on the web interface is advised. To connect with the interface, one just simply goes to the IP of the LAN interface from within the network. SSH access is not enabled by default. This can be enabled from the console though if this is required. The exact details of how the configuration is done will not be explained as this all depends on what way of configuration is chosen. When using the web interface everything is quite straight forward and obvious. When using the console, it is assumed that you have enough knowledge to have an idea of the correct commands.\\
+When PFSense is installed and the interfaces are configured, some basic configurations are of course needed. These configurations will heavily depend on the environment in which the firewall is deployed however. But in General following settings should be configured:
+\begin{itemize}
+\item The domain in which the firewall functions.
+\item Adding a personal administration user. When PFSense is deployed, a standard admin account will be created. But it should be obvious that it's a bad idea to just leave this as is. 
+\item Configure the DNS that you wish to use as primary DNS and as Secondary. 
+\item Configure the DNS forwarder/resolver settings to your own liking. An option exists to disable or enable the ability for the firewall to act as a DNS request resolver. This allows you to specify certain domains yourself. In this case that function was disabled. The DNS servers that were configured were the Virtual Box standard server (\textit{10.0.2.3}) and the local DNS server \textit{172.16.0.10}.
+\item Remove the rules that allow all traffic. Leave the rule that makes sure that you can not lock yourself out of the web interface.
+\item Depending on the situation a lot more settings can be set. But these are the most critical ones that should be set before starting anything else.
+\end{itemize} 
 
+Once these settings have been configured the firewall is ready for further configuration.
+\subsection{Configuring the firewall}
+There are a lot of different ways that this firewall can be of use to us. The two main ways being using rules (comparable with ACL's) and adding our personal DNS records (comparable with DNS whitelisting). Here the first option was chosen as it seemed more logical and easier to enable and disable. Which also is something that should be taken into consideration.
+The different steps to take are very similar to what was done when configuring the Vyos router. First off aliases are configured to add the domains to that we want to allow through our firewall. These are shown in the following image:
+\includegraphics[width=\textwidth]{img/Pfsense_Alias.png}
+
+The aliases used here are:
+\begin{itemize}
+\item Lan\textunderscore Zone: The local servers, these are not used in any rules here but just serve as an example.
+\item Whitelist: This list contains certain sites that we want to reach. On this list the option ``Type`` was set to Host(s). This requires you to fill in an IP-Address or a Fully qualified domain name. In this list are some websites that we want to reach.
+\item Whitelist\textunderscore two: This list has the same purpose as the list above it but here the option was set to Network(s). This requires you to fill in addresses in CIDR format. But if you set the subnet mask to /32 you of course can still specify a single IP address. Both these options were chosen just to show that both work. Again in this list are some websites that we want to access.
+\end{itemize}
+When adding a list a name has to be chosen. This name should be a logical one as this has be used as a reference. Further the other settings are straight-forward and to your own choosing.
+There is also a possibility to add port and url groups. But as the IP setting fulfills our needs we won't use these. But as the name suggests these are used to make aliases for groups of ports and urls. (As you may have noticed this is very similiar to the groups configured on a Vyos router).
+When all the desired aliases have been set the next step should be configuring the rules. The rules that were set in this example are:
+
+\includegraphics[width=\textwidth]{img/Pfsense_Rules.png}
+\begin{itemize}
+\item The first rule is added automatically by PfSense to prevent you from locking yourself out.
+\item The second rule allow traffic to DNS servers. As we are not blocking DNS access but rather blocking website access this is important to have. Otherwise no site would work, whitelisted or not.
+\item The third rule allows HTTP (port 80) TCP/UDP traffic for the hosts listed on the Whitelist list.  The next line allows HTTPS traffic for the same list of hosts. These combined makes it possible for most sites to load. Although some exceptions might not have enough with these two ports. And then further investigation into which ports are required and those should be added.
+\item The last rules allows all IPv4 traffic to the networks specified in the Whitelist\textunderscore two list. 
+\end{itemize}
+After this is done, all necessary configurations are made. Everything that is not mentioned in any rule will be dropped. So only access to the sites/domains on our lists are allowed now. Do remember if you are working local resources to allow these in the rules as well (not mentioned in this screenshot). Otherwise you won't be able to communicate with local servers. This configuration is very quickly done and should have the same effect as router ACL's. But remember the mention of the possibility to have the same functionalities as our DNS whitelist. This can be achieved by using the DNS resolver/forwarder option. If these are enabled one could simply block all DNS traffic going out and add the wanted addresses to the Host/Domain overrides at the bottom of the configuration page. Once this is done the web pages will be accessible again. Do not forget to enable the HTTP/HTTPS traffic though.
+\subsection{Effectiveness/conclusion}
+Not much new can be said here for the Effectiveness as it does the exact same as our Router ACL or DNS whitelist. Except that it is combined into one webinterface. And that is the big obvious pro here. The fact that it is very easy to use. Except for the configuration of the interfaces, no console is required. Everything can be configured with a user interface and a modern and easy of use one. But maybe for some, this might be a downer as it allows inexperienced users to do more damage if they would get it.
+The only other problem that I noticed while using PFSense is the fact that apparently PFSense (and the Edge browser as well) will sometimes remember certain translations or other data which enables a user to visit sites that were visited when certain rules were not enabled yet. This can be prevented when certain options are disabled though, most of these can be found under the advanced tab. A general problem with the previous three tested methods is the fact that it's not always easy to find out what ip/protocol/domain to allow to be able to reach certain websites. The ``netacad.com`` domain for example would not load while everything was allowed, while other sites on the same list were loading perfectly. It is assumed that this has to do with certain redirection and the site being hosted on addresses that are not the ones that a simple tracert of nslookup will give you. 
+\section{Safe Exam Browser}
+\subsection{Setting up SEB}
+\section{Automation}
 %SOURCE VYOS: https://app.vagrantup.com/bertvv/boxes/vyos116
