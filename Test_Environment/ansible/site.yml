@@ -8,8 +8,8 @@
 - hosts: dns
   become: true
   roles:
-  #  - bertvv.bind
-    - bertvv.dnsmasq
+    - bertvv.bind
+  #  - bertvv.dnsmasq
 
 - hosts: dhcp
   become: true

@@ -5,6 +5,33 @@ rhbase_firewall_allow_services:
   - dns
 #dnsmasq_domain: avalon.lan
 #dnsmasq_authoritative: true
-#dnsmasq_listen_address:
-#  - 172.16.0.10
+##dnsmasq_listen_address:
+##  - 172.16.0.10
 #dnsmasq_option_router: 172.16.255.254
+bind_zone_master_server_ip: 172.16.0.10
+
+bind_zone_name: avalon.lan
+bind_zone_networks:
+  - '172.16.0'
+bind_zone_name_servers:
+  - dns
+bind_zone_hosts	:
+  - name: dns
+    ip: 172.16.0.10
+    aliases:
+      - nameserver
+  - name: samba
+    ip: 172.16.0.11
+    aliases:
+      - files
+  - name: dhcp
+    ip: 172.16.0.12
+    aliases:
+      - internal
+
+bind_listen_ipv4:
+  - any
+bind_allow_query:
+  - any
+bind_forwarders:
+  - '172.16.0.10'
