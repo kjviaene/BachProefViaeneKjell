@@ -102,7 +102,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 #      sh.path = "scripts/router-config.sh"
 #    end
 #  end
-  #PFSense firewall, comment line 106 -  131 If you want the VYoS router to be build.
+  #PFSense firewall, comment line 106 -  127 If you want the VYoS router to be build.
   config.vm.define 'firewall' do |firewall|
     firewall.vm.box = 'kennyl/pfsense'
     firewall.ssh.username = 'vagrant'

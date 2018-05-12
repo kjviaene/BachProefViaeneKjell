@@ -3,30 +3,68 @@
 %%=============================================================================
 
 
-\chapter{Building the first test environment}
+\chapter{Test environment}
 \label{ch:TestEnvironment1}
 
-\section{Planning the test environment}
-The initial test environment existed out of a VyOS router, a windows 10 workstation and a CentOS based BIND DNS server. The setup of this environment was automated with the use of vagrant and Ansible. The necessary scrips to make this happened were picked from the course \'' Enterprise Linux \''. These were originally put together by Bert Van Vreckem. The most importan files are the following:
+\section{Core of the test environment}
+The test environment exists out of a VyOS router, a windows 10 workstation, a CentOS DNS server (using Dnsmasq), a DHCP server and a file server \footnote{The DHCP and file server are both CentOS as well. The configuration of these is of no importance to the scenario in this thesis though.}. The setup of this environment was automated with the use of vagrant and Ansible. The necessary scripts to make this happen were picked from the course `` Enterprise Linux ``. Vagrants usual way of configuring machines is by \textit{``provisioning``} a machine. In this case all the unix based servers are provisioned with a Ansible playbook that is ran locally on the VM. The other systems (Vyos and PFSense) are configured by the use of scripts that are locally stored on the host. These than get ran by vagrant when the system gets created (or if a user specifies to provision the machine).These were originally put together by Bert Van Vreckem. The most important files concerning the general setup are the following:
 \begin{itemize}
-\item The \'' role-deps.sh\'' script. This scrpt is responsible for being able to install ansible roles on a windows machine. So that these may be installed on the correct machines.
-\item The\'' playbook-win.sh \'' script which makes it possible for a windows machine to work with ansible. It installs the playbook onto the correct Linux machine and runs it locally there.
-\item The \'' Vagrantfile \''. In this file the base box is set to CentOs, it is responsible for executing the previous script on all the machines that are mentioned in the \'' Vagrant Hosts \'' file. It also checks wether the host is a Linux/Mac host or a Windows host and acts accordingly. There is a specific version to provision the router. The VyOs router can't be configured by Ansible. Instead it runs a script that is also located in vagrant folder. Simply running this script configures the router.
+\item The `` role-deps.sh`` script. This scrpt is responsible for being able to install ansible roles on a windows host machine. So that these may be installed on the correct virtual machiens.
+\item The`` playbook-win.sh `` script which makes it possible for a windows machine to work with ansible. It installs the playbook onto the correct Linux machine and runs it locally there. Normally Ansible is ran from one main device and installs everything upon all the clients/servers. But as Ansible does not work on a Windows machine it has to be installed on every client/server individually.
+\item The `` Vagrantfile ``. In this file the base box is set to CentOs, it is responsible for executing the previous script on all the machines that are mentioned in the ``Vagrant Hosts `` file. It also checks whether the host is a Linux/Mac host or a Windows host and acts accordingly. There is a specific version to provision the router. The VyOs router can't be configured by Ansible, neither can the PFSense firewall (FreeBSD). Instead it runs a script that is also located in vagrant folder. Simply running this script configures the router. In the vagrantfile one can also find the ``vagrant boxes`` that are used for the machines. These boxes contain a base image of the operating system that is being installed on each machine. The default box in this scenario is ``bento/centos-7.4``. For the firewall and the router it is accordingly ``kennyl/pfsense`` \& ``bertvv/vyos116`` .
+\item The `` vagrant-hosts`` file contains the names of the machines that vagrant should build together with the IP-Address and the subnet mask that it should be given. A lot of other options can be configured here but these were not set here. (For instance, synchronized folders are of no use to us and might even cause problems in some situations)
+\item The ``site.yml`` file contains all the Ansible roles that should be installed on each machine. This file can contain post- and pre-tasks as well. These are tasks that are executed before or after the installation of the roles.
+\item The ``all.yml`` file is located in the group\textunderscore folder. Which contains all variables that should be implemented in every machine ran by Ansible. This file contains the packages that should be installed on every machine (git,nano,vim-enhanced,...). As well as the configuration of an administrator account for every machine. The last thing configured is a ssh user and key to allow us to ssh into the machines from our git bash. 
+\item The ``host\textunderscore vars`` directory contains .yml files for every virtual machine that is provisioned by Ansible. In these, each device has its own specific variables set.
 \end {itemize}
+\section {Configuring the test environment}
+As stated before, there are multiple methods that will be tested using this environment. After each method has been executed the environment gets put back to its original state as described above. For each method the variables in the correct .yml files are edited. The specific settings of these variables will not be mentioned in this thesis as this is of little value to an outsider. They are only of use if someone uses the same role. But when reading the configurations made in this thesis it should not be to much of a hassle to figure out what variables to change.\\
+The router is configured using a bash script. this script contains all the necessary settings for the router to function (domain settings,interface configuration...). The script is explained in detail in the section about using ACL's on a router. Finally the PFSense firewall is mainly configured manually. But there is a possibility to automate the process once a initial configuration has been made. This by making a shell script like the following:
+\begin{cisco}[title=PFSense script]
+#!/bin/sh
+mv /home/vagrant/FirewallScript/config.xml /cf/conf/
+echo "Rebooting now!"
+reboot
+\end{cisco}
+The only thing happening here is a file being pasted into the correct folder on the pfsense machine. This xml file can be extracted from the web interface if a firewall is configured. This file should then be place in a folder. That folder should be specified to vagrant so that it can place the xml file on the pfsense machine. This does not happen using shared folders however. Using the standard shared folders provided by vagrant do not work on pfsense. The home folder of the standard created vagrant account however is accessible. So when pfsense is building the machine it pastes the script into its own home folder. Then once provisioning has started the file is moved into the /cf directory on the pfsense machine where it will replace the empty xml of the not yet configured firewall. When making a ssh connection with the firewall or entering the console it will still request you to configure the interfaces. This can not be skipped and the same configuration should just be set as it was stated in the xml file. When connecting with the web interface for the first time a basic configuration guide will start as well, this can be skipped however and should be skipped. All this translated into the vagrantfile should look like this:
+\begin{cisco}[title=PFSense automation in the vagrantfile]
+  config.vm.define 'firewall' do |firewall|
+    firewall.vm.box = 'kennyl/pfsense'
+    firewall.ssh.username = 'vagrant'
+    firewall.ssh.password = 'vagrant'
+    firewall.ssh.shell = '/bin/sh'
+    firewall.vm.guest = 'freebsd'
+    firewall.vm.synced_folder ".", "/vagrant", disabled: true #If this is not disabled vagrant will show an error.
+    firewall.vm.network :private_network,
+      ip: '172.16.255.254',
+      netmask: '255.255.0.0',
+      auto_config: false
+    firewall.ssh.insert_key = false
 
+    firewall.vm.provision "file" do |fil|
+      fil.source = "scripts/FirewallScript"
+      fil.destination = "/home/vagrant/" #The home folder of the vagrant user
+    end
+
+    firewall.vm.provision "shell" do |sh|
+      sh.path = "scripts/FirewallScript/firewall-config.sh"
+    end
+  end
+\end{cisco}
+In the section about configuring the firewall there will be no mention of the automation progress. This because it does not have anything to do with configuring it. If automation is wanted, one simply exports the configurations as a xml file and does as described above.
 \section{ Choice of the router Operating System }
 There are 3 big candidates to be used as OS for the router. Vyos, PFSense and cisco. All three have their pros and cons. In the test environment a Vyos Router was chosen above the other two.
 \subsection{ Cisco router}
-In the school all routers and switches being used are using the cisco OS. It has a wide variety of supported protocols. It has a lot of support available as it is the biggest players when it comes to Enterprise networking. The networking classes that are taught are based on Netacad courses which are made by cisco are based on cisco systems. In conclusion, it's the only logical choice to make to use inside of the school. \\
-In this Test Environment however, it's a different story. As an individual buying a license for a cisco device is extremely pricey. Buying a license just to be able to test a router in a test environment would be a ridiculous waste of money.There are no special offers available at this time for students to use cisco OS with a student license or anything of the like. \\
-Considering that the functionalities that are going to be used on the router are quite basic it's a quick decision to make. Picking a free OS for the purpose of builiding this environment is the only choise that's feasable.
+In the school environment all routers and switches being used are using the cisco OS. It has a wide variety of supported protocols. It has a lot of support available as it is the biggest player when it comes to Enterprise networking. The networking classes that are taught are based on Netacad courses which are made by cisco and are based on cisco systems. In conclusion, it's the only logical choice to make to use inside of the environment in question. \\
+In this test environment however, it's a different story. Buying a license for a cisco device is extremely pricey as an individual . Buying a license just to be able to test a router in a test environment would be a ridiculous waste of money.There are no special offers available at this time for students to use cisco OS with a student license or anything of the like. \\
+Considering that the functionalities that are going to be used on the router are quite basic it's a quick decision to make. Picking a free OS for the purpose of building this environment is the only choice that's feasible.
 \subsection { PFSense routing }
-The two big names one comes across when searching for free routing operating systems are PFSense and VYoS. First and Foremost pfSense is a firewall. Which is not what was needed in this setup. PFSense started out as being an other routing system but it diveted from that path. This alone is not a problem in this situation at hand. It may even be better considering the purpose here is to protect our network from and to the outside. \\
-The first argument against however is the fact that PFSense is FreeBSD and is configured using GUI. This may seem positive for most, but the fact that our setup is automated makes every OS which is GUI based a struggle. There is of course a CLI available, but to be able to work with it requires a lot of knowledge and practice. \\
-The second argument againt PFSense is an argument based on the previous one. The fact that in the school cisco routers are used means that all those routers are configured via CLI. Using a router in our test environment that is based on GUI would be quite a big difference. If one would want to copy the configuration of a PFSense machine to cisco machine, a wall would be hit. The configuration of a PFSense machine can only be downloaded using an .XML file. Which has no use in a cisco router and means one would just have to re-configure the whole system.
+The two systems that are on the table are a PFSense based router and a Vyos based router. First and foremost PFSense is a firewall. Which is not what was needed in this setup. PFSense started out as being an other routing system but it diverted from that path. This alone is not a problem in the situation at hand. It may even be better considering the purpose here is to protect our network from and to the outside. \\
+The first argument against using PFSense as our main routing OS however is the fact that PFSense is FreeBSD and is configured using GUI. This may seem positive for most, but the fact that our setup is automated makes every OS which is GUI based a struggle. There is of course a CLI available, but to be able to work with it requires a lot of knowledge and practice. \\
+The second argument against PFSense is an argument based on the previous one. The fact that in the school cisco routers are used means that all those routers are configured via CLI. Using a router in our test environment that is based on GUI would be quite a big difference. If one would want to copy the configuration of a PFSense machine to cisco machine, a wall would be hit. The configuration of a PFSense machine can only be downloaded using an .XML file. Which has no use in a cisco router and means one would just have to re-configure the whole system. PFSense will be used however as a firewall in our system so it is not entirely left out. It will replace the Vyos router in that specific scenario.
 \subsection { VyOs router }
-A router running on vyos is the one being used in the test environment. The vyos router was chosen mainly because it is an operating system based on unix and it is configured via a CLI.
-A lot of commands used in a vyos router actually have meaning in the cisco OS. The way of working with a vyos router is very comparable to working with a cisco router. And this is very important  to this situation. The test environment has to be representative of the real situation. And a vyos router is getting very close to a cisco router. As in the way that it feels and looks. This statement is not true when comparing the two systems in perfomance and possibilities of course. But that is not important in this case.
+A router running on vyos is the one being used in the test environment. The vyos router was chosen mainly because it is an operating system based on unix,it was used in previous courses  and it's free.
+A lot of commands used in a vyos router actually have meaning in the cisco OS. The way of working with a vyos router is very comparable to working with a cisco router. And this is very important  to this situation. The test environment has to be representative of the real situation. And a vyos router is getting very close to a cisco router. As in the way that it feels and looks. This statement is not true when comparing the two systems in performance and possibilities of course. But that is not important in this case as the possibilities available are enough for us.
 
 %https://www.cisco.com/c/en/us/support/docs/ios-nx-os-software/ios-software-releases-110/13178-15.html
 

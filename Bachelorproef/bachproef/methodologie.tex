@@ -2,47 +2,12 @@
 %% Methodologie
 %%=============================================================================
 
-\chapter{Execution}
+\chapter{Methodology}
 \label{ch:methodologie}
 
-\section{Vyos Router / ACL's}
-\subsection{Introduction}
-As mentioned in the State of the Arts chapter, Vyos does not implement Access control lists like cisco devices do. Instead there is a build in firewall application. We use this to mimic the ACL's that one would configure on a cisco device. Our goal is to block all external sites except the ones that may be accessed during the exam (in our examples we'll just be using the standard school website). Furthermore, the vyos router is implemented only as a router. No DHCP/firewall settings were configured outside of the scope of this thesis. But if this would be the case, these settings would not interfere with our configuration. As long as the correct rules are followed of course. 
-\subsection{Installation of Vyos}
-The installation of Vyos is nothing really special. To start off you'll need the image. You can pick one that meets your needs. In the case of this thesis the setup was automated however. Which was done by using vagrant and a Vyos box \textit{bertvv/vyos116} [SOURCE VYOS]. This however is pretty much the same as manually downloading the .iso file, making a bootable device with it, and installing it onto your device of choice. After the installation of Vyos it is advised  to reboot the machine. It should be quite obvious that the machine that you wish to use should have 2 working network cards installed. One as an inside interface and one as an outside interface card. More than two can of course be used (for a DMZ zone for instance) but it is not required and not touched upon here.
-\subsection{Configuration of the router}
-All of the configurations for the router are placed in a shell script. This script is ran by vagrant when the machine is provisioned. Remember that all these settings can be done manually just as easily, explanations here about commands are given from a general point of view. Nothing changes if one chooses to automate the process or do it manually. The first things that are configured are the interfaces and basic information about the router.\\
+To test the possible methods described earlier a virtual network was set up using Oracle VirtualBox \footnote{ https://www.virtualbox.org/} in combination with Vagrant \footnote{https://www.vagrantup.com/} and Ansible \footnote{https://www.ansible.com/}. The specifics of this test environment can be found in the next chapter. A physical network was not possible as this required to much materials and cost. The school is located to far as well to be able to build an environment there. Which resulted in the need of a virtual network. The only issue with the virtual network is the fact that only a computer with eight gigabytes of RAM is available, which sometimes is not that much when running four to five virtual machines.\\
 
-\begin{cisco}[title=Basic configuration]
-configure
-#
-# Basic settings
-#
-set system host-name 'Router'
-set system domain-name example.lan
-#
-# IP settings
-#
-set interfaces ethernet eth0 address dhcp
-set interfaces ethernet eth0 description WAN
-set interfaces ethernet eth1 address 172.16.255.254/16
-set interfaces ethernet eth1 description inside
-\end{cisco} \\
-The first command puts us in the configuration mode, if this command is forgotten, all the following commands will fail and the router will be left unconfigured. Next up the host-name and the domain name are configured. Followed by the configuration of the interfaces. There are two interfaces configured, both Ethernet ports. \textit{Eth0} is the port which leads to the outside and \textit{eth1} is our inside port which is connected to our local network \textit{example.lan}. Our inside interface is configured as the default gateway for all the devices in our network and has been given the IP-Address \textit{172.16.255.254} as is common practice.The outside interface gets it IP from our ISP.\\
-The following commands configure the Network Address Translation (NAT) for our interfaces. In most networks this will be a lot more complicated but for us the only thing that is happening is our inside network addresses that get masqueraded when exiting via the outside interface.
-\begin{cisco}[title=NAT configuration]
-set nat source rule 100 outbound-interface eth0
-set nat source rule 100 source address '172.16.0.0/16'
-set nat source rule 100 translation address masquerade
-#
-# Domain Name Service
-#
-set system name-server 10.0.2.3
-set service dns forwarding system
-set service dns forwarding domain example.lan server 172.16.0.10
-set service dns forwarding listen-on 'eth1'
-\end{cisco}\\
-After the NAT configuration, the DNS settings are configured, which are quite important to us. The system name-server command sets the main server that is chosen when DNS queries are received. In this case \textit{10.0.2.3} is the address that has to be configured when using virtual box. In a physical network however, this can be set to any other DNS server that you know of, that is outside of your network. Following the system name-server we enable dns forwarding and all the queries which concern a device inside the `` example.lan`` network are forwarded to our local server. This server has been given the \textit{172.16.0.10} IP-Address.
+For each method adjustments are made to the test environment. These adjustments already form a base to the conclusion made in the thesis as the difficulty of configuring the devices is a factor for evaluation. When the configurations have been completed it is tested if the wanted results have been reached. If this is the case, or if not, than a conclusion is made about the effectiveness of the method. In the final conclusion a bigger conclusion about all methods will be made based on these setups. Some loopholes and such that might have been encountered during the setups of these environments will be mentioned there as well.\\
 
 
 
@@ -58,4 +23,5 @@ After the NAT configuration, the DNS settings are configured, which are quite im
 
 
 
-%SOURCE VYOS: https://app.vagrantup.com/bertvv/boxes/vyos116
+
+
