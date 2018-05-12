@@ -5,10 +5,12 @@
 \chapter{Methodology}
 \label{ch:methodologie}
 
+\section{General}
 To test the possible methods described earlier a virtual network was set up using Oracle VirtualBox \footnote{ https://www.virtualbox.org/} in combination with Vagrant \footnote{https://www.vagrantup.com/} and Ansible \footnote{https://www.ansible.com/}. The specifics of this test environment can be found in the next chapter. A physical network was not possible as this required to much materials and cost. The school is located to far as well to be able to build an environment there. Which resulted in the need of a virtual network. The only issue with the virtual network is the fact that only a computer with eight gigabytes of RAM is available, which sometimes is not that much when running four to five virtual machines.\\
 
 For each method adjustments are made to the test environment. These adjustments already form a base to the conclusion made in the thesis as the difficulty of configuring the devices is a factor for evaluation. When the configurations have been completed it is tested if the wanted results have been reached. If this is the case, or if not, than a conclusion is made about the effectiveness of the method. In the final conclusion a bigger conclusion about all methods will be made based on these setups. Some loopholes and such that might have been encountered during the setups of these environments will be mentioned there as well.\\
-
+\section{To automate or not to automate}
+One might wonder if it is worth automating the processes in this thesis. The answer is that it really depends on the situation at hand. If only one router and firewall have to be configured, automating the whole process is probably slower than doing it manually. As well as the fact that changes made to the firewall and router (adding rules/ACL's) are quickly added and removed. So unless it is required to configure a fair amount of these, automation is probably not a good option. However, for the DNS server (and the dhcp/file server) it is advised to automate. These take quite a while to be configured and the automation process is often quite a bit simpler than doing everything manually. Using Ansible roles changes often simply require the assigning of values to variables. While if this is done manually more errors might be made. So not only is it faster but it does reduce the chance of errors. Except of course if the roles are badly made. So in conclusion, if you have a reliable role or other way to automate the setup of these, it is advised to automate.
 
 
 
