@@ -6,7 +6,6 @@
 \documentclass[fleqn,a4paper,12pt]{book}
 
 \input{structure}
-
 %%---------- Documenteigenschappen --------------------------------------------
 %% TODO: Vul dit aan met je eigen info:
 
@@ -43,6 +42,15 @@
 %%=============================================================================
 %% Inhoud document
 %%=============================================================================
+\makeglossaries
+ 
+\newglossaryentry{maths}
+{
+    name=mathematics,
+    description={Mathematics is what mathematicians do}
+}
+\glossarystyle{altlist}
+
 
 \begin{document}
 
@@ -69,18 +77,13 @@
 
 %---------- Lijst figuren, afkortingen, ... -----------------------------------
 
-% Indien gewenst kan je hier een lijst van figuren/tabellen opgeven. Geef in
-% dat geval je figuren/tabellen altijd een korte beschrijving:
-%
-%  \caption[korte beschrijving]{uitgebreide beschrijving}
-
-\listoffigures
-\listoftables
 
 % Als je een lijst van afkortingen of termen wil toevoegen, dan hoort die
 % hier thuis. Gebruik bijvoorbeeld de ``glossaries'' package.
 % https://www.sharelatex.com/learn/Glossaries
-
+% werkt niet
+%\printglossaries
+%\printglossary
 %%---------- Kern -------------------------------------------------------------
 
 \input{inleiding}
@@ -95,7 +98,6 @@
 %...
 
 \input{conclusie}
-
 %%=============================================================================
 %% Bijlagen
 %%=============================================================================
@@ -104,9 +106,9 @@
 
 %%---------- Onderzoeksvoorstel -----------------------------------------------
 
-\chapter{Onderzoeksvoorstel}
+\chapter{Research proposal}
 
-Het onderwerp van deze bachelorproef is gebaseerd op een onderzoeksvoorstel dat vooraf werd beoordeeld door de promotor. Dat voorstel is opgenomen in deze bijlage.
+The subject of this thesis was based on the research proposal that was evaluated beforehand by the promotor. The proposal is added in this attachment.
 
 % Verwijzing naar het bestand met de inhoud van het onderzoeksvoorstel
 \input{../voorstel/voorstel-inhoud}

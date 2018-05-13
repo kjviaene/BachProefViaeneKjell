@@ -1,16 +1,22 @@
 %---------- Inleiding ---------------------------------------------------------
 
-\section{Introductie} % The \section*{} command stops section numbering
+\section{Introduction} % The \section*{} command stops section numbering
 \label{sec:introductie}
 
-Hier introduceer je werk. Je hoeft hier nog niet te technisch te gaan.
-
-Je beschrijft zeker:
-
+Students sometimes have to take an exam digitally at the University College of Ghent. This now happens on PCs provided by the college in computer classrooms. However, this is something we want to get rid of. If students always have the opportunity to take exams and tests via their own computers, this will provide more freedom for both the school and the students. More exams can be taken digitally and the amount of digital examinations that are taken simultaneously can be increased. This no longer depends on the number of computer classrooms that are available.\\
+\\
+\\
+The system now allows you to take digital exams, but not in optimal conditions. Currently there is a big possibility of cheating during an exam. Students use the internet while this is not allowed, communicate with each other or use prohibited applications. Completely removing internet access in the classrooms is now possible (by simply disconnecting the classroom from the school network) but is not wanted in a lot of cases. If we implement an exam server access to the network must be possible. Exams which require logging  into external sites (e.g. netacad) require internet access as well.  With no immediate changes in sight, more teachers tend to take a step back and take written examinations. The exact opposite of what is desired. However, neither the students nor the teachers are to blame but the system is. We want to succeed in designing a system, where fraud is eliminated and students can use their own laptop to take the exams. Setting up these environments should be automated so that this can be done quickly and flexibly. For example, dozens of ordinary classrooms can suddenly serve as computer classrooms. \\
 \begin{itemize}
-  \item de probleemstelling en context
-  \item de motivatie en relevantie voor het onderzoek
-  \item de doelstelling en onderzoeksvraag/-vragen
+  \item \textbf{Goal}: Creating an environment in which we are able to conduct a digital exam while limiting the possibilities to cheat.
+  \item \textbf{Research questions}:
+\begin{itemize}
+   \item Can we limit access to the Internet to only the necessary items? (e.g. allowing access to chamillo.hogent.be / netacad.com but not YouTube / Google )
+   \item Is it possible to set up an exam server, which is only accessible to registered students, where all the exams are submitted digitally?
+   \item Can personal applications be filtered while allowing certain necessary programs?
+   \item Can the setup of this environment be automated so every teacher can easily set up his own exam room?
+   \item Can this all be done with currently available technology or should the school invest in new equipment/software?
+  \end{itemize}
 \end{itemize}
 
 %---------- Stand van zaken ---------------------------------------------------
@@ -18,34 +24,38 @@ Je beschrijft zeker:
 \section{State-of-the-art}
 \label{sec:state-of-the-art}
 
-Hier beschrijf je de \emph{state-of-the-art} rondom je gekozen onderzoeksdomein. Dit kan bijvoorbeeld een literatuurstudie zijn. Je mag de titel van deze sectie ook aanpassen (literatuurstudie, stand van zaken, enz.). Zijn er al gelijkaardige onderzoeken gevoerd? Wat concluderen ze? Wat is het verschil met jouw onderzoek? Wat is de relevantie met jouw onderzoek?
+\subsection{At the University College of Ghent}
+At the University College of Ghent there are computer classrooms filled with desktops. These all have the required applications installed that are required for taking tests and/or exams. The access to the internet or certain applications is currently limited by the use of NetOp. Some exams require a teacher to be able to use such a classroom. But this puts a limitation on the amount of digital exams that can be taken at one time. This limit being equal to the amount of available computer classrooms. If teachers are brave enough to allow students to take an exam on their personal devices then the chance of fraud rises exponentially. 
+\\
+\subsection{At the Brunel University London}
+By reading the\emph{ Digital Assessment Blog} by the Brunel University of London ~\autocite{Brunel2017} we can see that other schools are trying the same thing. Here we find that they had issues as well. Their issues are not related to cheating though. The main issues they are describing is the loss of power or internet connections. These are factors that we did not account for thus far. But I believe that our system is small enough to not have these kind of problems. \\
+An other issue they describe is the fact that not all students own a personal device and have to rely on the school computer system. But in our case laptops are a must have so this issue won’t come up as much. And if it does, maybe we can configure some current desktops to work with the new environment we would build. \\
 
-Verwijs bij elke introductie van een term of bewering over het domein naar de vakliteratuur, bijvoorbeeld~\autocite{Doll1954}! Denk zeker goed na welke werken je refereert en waarom.
-
-% Voor literatuurverwijzingen zijn er twee belangrijke commando's:
-% \autocite{KEY} => (Auteur, jaartal) Gebruik dit als de naam van de auteur
-%   geen onderdeel is van de zin.
-% \textcite{KEY} => Auteur (jaartal)  Gebruik dit als de auteursnaam wel een
-%   functie heeft in de zin (bv. ``Uit onderzoek door Doll & Hill (1954) bleek
-%   ...'')
-
-Je mag gerust gebruik maken van subsecties in dit onderdeel.
+\subsection{Cheating at Digital Exams}
+\emph{Aleksander Heintz} wrote his thesis on the subject of Cheating at Digital exams, Vulnerabilities and Countermeasures \autocite {Heintz2017}. He researches the way students can cheat at BYOD exams on his university. Even though his research is quite specific to their situation, he still has some interesting points. His conclusions say that there will always be ways to cheat though. Even though people will keep working on finding new ways of solving certain exploits or loop holes that students find. The students will always find a way to sidestep these solutions. But it will get harder and harder for students to do so, and so maybe we will reach a point on which it is easier for a student to just learn for the exam instead of going through a lot of trouble to cheat his way through.
 
 %---------- Methodologie ------------------------------------------------------
-\section{Methodologie}
+\section{Methodology}
 \label{sec:methodologie}
 
-Hier beschrijf je hoe je van plan bent het onderzoek te voeren. Welke onderzoekstechniek ga je toepassen om elk van je onderzoeksvragen te beantwoorden? Gebruik je hiervoor experimenten, vragenlijsten, simulaties? Je beschrijft ook al welke tools je denkt hiervoor te gebruiken of te ontwikkelen.
+Building a virtual network to mimic the desired situation will be a big part of the Methodology. This will be realised by using software like virtual box and Cisco Packet Tracer. Using this we'll be able to get a good idea of the desired configuration of all the devices (servers, clients, routers, ... ).
 
 %---------- Verwachte resultaten ----------------------------------------------
-\section{Verwachte resultaten}
+\section{Expected Results}
 \label{sec:verwachte_resultaten}
 
-Hier beschrijf je welke resultaten je verwacht. Als je metingen en simulaties uitvoert, kan je hier al mock-ups maken van de grafieken samen met de verwachte conclusies. Benoem zeker al je assen en de stukken van de grafiek die je gaat gebruiken. Dit zorgt ervoor dat je concreet weet hoe je je data gaat moeten structureren.
+We expect to find a configuration for the network to limit the access to the internet. This will probably be for a Wireless Access Point (WAP). A file consisting out of configuring multiple access-lists, security settings, etc. \\
+A fully configured exam server is another result we'll expect. This may be physical or virtual using the most suited OS (a Windows version or a Linux distribution). Access to the server will be limited to certain students and the files will be sufficiently protected. The specific use of the exam server is not clear yet. It could be a simple server from which the students can download their exams and then upload them again. This is the simplest version that we can expect. But maybe other uses can be found for it. For example: making it the only accessible server on the network and hosting software on there which students can use to complete the exam. Make a service that randomises all possible questions and makes an unique exam for each student. But these are extra’s that may not come to be discussed during this bachelor thesis. 
+\\
+Automating the setup will depend of what OS is used for the exam server. If it's Linux based this will be an Ansible role. If it's Windows based it will be more difficult but doable with shell scripting, using software like chocolatey and general Windows Automation features. \\
+
 
 %---------- Verwachte conclusies ----------------------------------------------
-\section{Verwachte conclusies}
+\section{Expected conclusions}
 \label{sec:verwachte_conclusies}
 
-Hier beschrijf je wat je verwacht uit je onderzoek, met de motivatie waarom. Het is \textbf{niet} erg indien uit je onderzoek andere resultaten en conclusies vloeien dan dat je hier beschrijft: het is dan juist interessant om te onderzoeken waarom jouw hypothesen niet overeenkomen met de resultaten.
+Students will be able to partake in an digital exam using their own devices. The possibility to cheat will be eliminated by using a combination of techniques. This way students and teachers will have an easier way of taking examinations. Students will be comfortable with their own device. Teachers won’t have to worry about possible cheaters because this responsibility will be taken away from them. \\
+This will be realized by using a configured WAP or a similar network device that limits the access for students partaking in the examinations. The exams will be handed into a pre-configured exam server. This server is secure as well.  Meaning that students will only be able to hand in their exams during the period that it’s allowed and won’t be able to change it once it’s handed in. \\
+The cost of implementing a system like this will be minimized by automating as much as possible. This way implementation is quick and easy. And if additional servers/devices need configuring the same automatization can be used.\\
+
 

@@ -2,50 +2,39 @@
 %% Inleiding
 %%=============================================================================
 
-\chapter*{Inleiding}
+\chapter*{Introduction}
 \label{ch:inleiding}
 
-De inleiding moet de lezer net genoeg informatie verschaffen om het onderwerp te begrijpen en in te zien waarom de onderzoeksvraag de moeite waard is om te onderzoeken. In de inleiding ga je literatuurverwijzingen beperken, zodat de tekst vlot leesbaar blijft. Je kan de inleiding verder onderverdelen in secties als dit de tekst verduidelijkt. Zaken die aan bod kunnen komen in de inleiding~\autocite{Pollefliet2011}:
+This introduction will give you a general idea of what to expect in this thesis. Why was it written, how was it written and what's the purpose of it. 
 
-\begin{itemize}
-  \item context, achtergrond
-  \item afbakenen van het onderwerp
-  \item verantwoording van het onderwerp, methodologie
-  \item probleemstelling
-  \item onderzoeksdoelstelling
-  \item onderzoeksvraag
-  \item \ldots
-\end{itemize}
-
-\section{Probleemstelling}
+\section{Issue at hand}
 \label{sec:probleemstelling}
 
-Uit je probleemstelling moet duidelijk zijn dat je onderzoek een meerwaarde heeft voor een concrete doelgroep. De doelgroep moet goed gedefinieerd en afgelijnd zijn. Doelgroepen als ``bedrijven,'' ``KMO's,'' systeembeheerders, enz.~zijn nog te vaag. Als je een lijstje kan maken van de personen/organisaties die een meerwaarde zullen vinden in deze bachelorproef (dit is eigenlijk je steekproefkader), dan is dat een indicatie dat de doelgroep goed gedefinieerd is. Dit kan een enkel bedrijf zijn of zelfs één persoon (je co-promotor/opdrachtgever).
+Currently a lot of schools (including the HoGent) struggle with setting up environments in which a digital examination can be conducted. This often because of the lack of knowledge around IT or around the general possibilities one has. There are multiple ways to do this and it might not always be clear what way is the best way to go and what certain advantages and disadvantage are of those methods. That's why in this thesis the most commonly known ways of setting up such an environment are tested and compared with each other. When the thesis has been read the reader will be able to determine what solution fits his needs the best. While also understanding the multiple ways that one can take. 
 
-\section{Onderzoeksvraag}
+\section{Research questions}
 \label{sec:onderzoeksvraag}
-
-Wees zo concreet mogelijk bij het formuleren van je onderzoeksvraag. Een onderzoeksvraag is trouwens iets waar nog niemand op dit moment een antwoord heeft (voor zover je kan nagaan). Het opzoeken van bestaande informatie (bv. ``welke tools bestaan er voor deze toepassing?'') is dus geen onderzoeksvraag. Je kan de onderzoeksvraag verder specifiëren in deelvragen. Bv.~als je onderzoek gaat over performantiemetingen, dan 
-
-\section{Onderzoeksdoelstelling}
+The specific research questions are as follows:
+\begin{itemize}
+   \item Can we limit access to the Internet to only the necessary items? (e.g. allowing access to chamillo.hogent.be / netacad.com but not YouTube / Google )
+   \item Is it possible to set up an exam server, which is only accessible to registered students, where all the exams are submitted digitally?
+   \item Can personal applications be filtered while allowing certain necessary programs?
+   \item Can the setup of this environment be automated so every teacher can easily set up his own exam room?
+   \item Can this all be done with currently available technology or should the school invest in new equipment/software?
+\end{itemize}
+These questions are made from the perspective as a student at the HoGent. So it is possible that these questions already have answers in other school, but we want to find a solutions for schools that do not yet have these answers. Once these have been answered it will be clear what the possibilities are when setting up a protected environment and how easy/difficult this is. What the required resources are and if it is all around worth it. The actual methods that are executed in this thesis will not answer these questions directly. But it's by testing these methods and looking at the results that we'll be able to get a conclusion out of it.
+\section{Research objective}
 \label{sec:onderzoeksdoelstelling}
-
-Wat is het beoogde resultaat van je bachelorproef? Wat zijn de criteria voor succes? Beschrijf die zo concreet mogelijk.
-
-\section{Opzet van deze bachelorproef}
+The objective is to be able to start with an unprotected environment and to be able to make a protected one out of it. While taking into account the situation in which the environment is located. If a way is found to protect the environment in multiple ways we can see the objective as reached. If however the conclusion is that no method really fulfills our needs, then this thesis has failed its purpose. But even then there will be more clarity around the possible ways to filtering data in a network.
+\section{The intention of this thesis}
 \label{sec:opzet-bachelorproef}
+The thesis consists out of different parts which each have their own purpose. Each parts build towards a common conclusion. To make the structure of this thesis a bit more clear a short explanation of each chapter follows:
+\begin{itemize}
+\item In chapter ~\ref{ch:stand-van-zaken} an in depth explanation is given of all the methods that are being tested. After reading this chapter the reader will have a good understanding of how every method works and what the differences are between them on a core level. Based on this information an opinion can already be made as to what method he would prefer.
+\item In chapter ~\ref{ch:methodologie} a brief explanation is given as to how these methods will be executed and tested. A short text also discusses the use of automation.
+\item In chapter ~\ref{ch:TestEnvironment1} the test environment in which the different methods are tested is explained in more detail. Every device that is used and the basic configuration that it receives are mentioned here.
+\item In chapter ~\ref{ch:execution} the actual execution of the methods is done. Here a explanation is given as to how and why certain settings are set. Each method has the same goal (filtering websites) but of course reaches this goal in an other way. 
+\item In chapter ~\ref{ch:conclusie} a conclusion is build on the experiences that were had during the execution. In this part the final decision is made as to what method is the best. This conclusion can vary if a reader finds himself in a different situation than the situation on which this thesis was based.
+\end{itemize}
 
-% Het is gebruikelijk aan het einde van de inleiding een overzicht te
-% geven van de opbouw van de rest van de tekst. Deze sectie bevat al een aanzet
-% die je kan aanvullen/aanpassen in functie van je eigen tekst.
-
-De rest van deze bachelorproef is als volgt opgebouwd:
-
-In Hoofdstuk~\ref{ch:stand-van-zaken} wordt een overzicht gegeven van de stand van zaken binnen het onderzoeksdomein, op basis van een literatuurstudie.
-
-In Hoofdstuk~\ref{ch:methodologie} wordt de methodologie toegelicht en worden de gebruikte onderzoekstechnieken besproken om een antwoord te kunnen formuleren op de onderzoeksvragen.
-
-% TODO: Vul hier aan voor je eigen hoofstukken, één of twee zinnen per hoofdstuk
-
-In Hoofdstuk~\ref{ch:conclusie}, tenslotte, wordt de conclusie gegeven en een antwoord geformuleerd op de onderzoeksvragen. Daarbij wordt ook een aanzet gegeven voor toekomstig onderzoek binnen dit domein.
 

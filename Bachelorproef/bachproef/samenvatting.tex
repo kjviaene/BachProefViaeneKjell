@@ -28,13 +28,34 @@
 \IfLanguageName{english}{%
 \selectlanguage{english}
 
-\chapter*{Summary}
+\chapter*{Samenvatting (dutch)}
 \selectlanguage{english}
 }{ }
+Het opzetten van een beveiligde digitale omgeving is altijd een uitdaging, ongeacht de situatie. Door de continue ontwikkeling van technologie, en zeker in het vakgebied van de informatica, is het soms uitdagend om de beveiliging even snel te doen mee evolueren. De kern van deze bachelor proef is het opzetten van een omgeving waarin studenten een digitaal examen kunnen afleggen in een omgeving waar de toegang tot bepaalde middelen zijn beperkt. Zodanig de kans op spieken verminderd. Een dergelijke omgeving is cruciaal bij het bepalen van de resultaten van testen en examens. Als studenten namelijk in staat zijn van eenvoudig te spieken tijdens een examen of test dan verliezen deze hun waarde in het vak. En zo zal er dan geen duidelijke weerspiegeling gevormd worden van hun kennis.
+De school zelf zal zo onder de indruk zijn dat het vak te gemakkelijk is of niet waardevol is voor het grootste deel van de studenten. Hierdoor zal het vak misschien als minderwaardig worden gezien en zo ook de stof die in het vak wordt geleerd. Ook de studenten zelf zullen denken dat ze het vak onder de knie hebben en slagen voor hun examens. Echter zonder een doorgronde kennis van de stof, en dit zou later wel eens voor problemen kunnen zorgen. \\
+Om zo een systeem op te zetten werd onderzoek gedaan naar verschillende mogelijke manieren voor het opzetten van een beveiligde netwerk omgeving voor het afleggen van digitale examens. Deze zijn:
+\begin{itemize}
+\item Het filteren op basis van een DNS Whitelist
+\item Het filteren op basis van een ACL op een router
+\item Het filteren op basis van een firewall
+\item Het filteren a.d.h.v. een applicatie
+\end{itemize}
+Deze zijn de meest voor de hand liggende methoden die gebruikt worden om informatie te filteren in het netwerk. Er wordt onderzocht welke van deze methoden goed zijn en hoe goed ze zijn in wat ze doen. Ook de eenvoud van het configureren en kost wordt in rekening gebracht. \\
+Na het testen van deze methoden kunnen we concluderen dat DNS whitelisting te veel werk vereist en te gemakkelijk omzeilt kan worden. ACL en een firewall hebben dit minder en zijn daarom betere keuzes. Echter het gebruik maken van een applicatie die lokaal op elke computer staat geïnstalleerd is de beste keuze die kan gemaakt worden. We spreken hier van Safe Exam Browser (SEB) wat werd vermeld in een thesis in de literatuurstudie en bleek een uitstekende tool te zijn om te gebruiken in deze probleemstelling. Het bereikt alle gewenste factoren en is gemakkelijk in het gebruik. Er is echter wel een nadeel, de tool is niet geïntegreerd met chamillo. Dit zou echter een onderwerp kunnen zijn voor verder onderzoek.
+
+
 
 %%---------- Samenvatting -----------------------------------------------------
 % De samenvatting in de hoofdtaal van het document
 
 \chapter*{\IfLanguageName{english}{Summary}{Abstract}}
 Setting up a secure environment in any situation is a challenge. With technology constantly evolving, especially in the IT sector, it's always hard to keep security up to date as well. The core of  the purpose in this thesis is to build a system that ensures students who are taking part in an examination only have access to those resources which they are allowed to use. \\ Having a system like this is crucial to having a good grading of courses. When students are able to cheat at examinations as easily as they often can now, all the value of an examination is lost.\\ For the school itself it would seem like the course is too easy and needs to be made harder. Which devalues the material that is being taught in this course.  \\
-The students will think that they are having it easy and will pass the exam without any real knowledge of the subject. This may come back in later situations (follow up courses, job inteviews, ...) where they then realize that they seem to be missing some knowledge that they were supposed to have.\\
+The students will think that they are having it easy and will pass the exam without any real knowledge of the subject. This may come back in later situations (follow up courses, job interviews, ...) where they then realize that they seem to be missing some knowledge that they were supposed to have.\\
+Multiple methods were tested to find a system in which these problems are resolved. These methods are:
+\begin{itemize}
+\item Filtering using a DNS Whitelist
+\item Filtering using an ACL on a router
+\item Filtering using a firewall
+\item Filtering using an application.
+\end{itemize}
+These are the most common ways of filtering internet access in a network. Research is done as to what method is good and how good these methods are compared with each other. How complicated they are to set up and maintain. After testing these methods a conclusion was made that DNS whitelisting is the worst choice. This methods requires the most work and performs the lowest. While the ACL on a router and a firewall are pretty even. They are easy to configure and allow for better protection. The firewall has more possibilities but can be harder to set up while the router is a bit simpler but is easy to set up. The best choice however is without a doubt the application (Safe Exam Browser). This application secures every device on its own and allows for local filtering of the internet and the local files. This is the perfect solution to our issue. It's easy to use and performs really well. The only downside to it is that there is no integration with Chamillo. It can still be used but some authorization methods are not applicable. This however could be the subject of an other research paper.
