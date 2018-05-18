@@ -55,7 +55,8 @@ In the section about configuring the firewall there will be no mention of the au
 \section{ Choice of the router Operating System }
 There are 3 big candidates to be used as OS for the router. Vyos, PFSense and cisco. All three have their pros and cons. In the test environment a Vyos Router was chosen above the other two.
 \subsection{ Cisco router}
-In the school environment all routers and switches being used are using the cisco OS. It has a wide variety of supported protocols. It has a lot of support available as it is the biggest player when it comes to Enterprise networking. The networking classes that are taught are based on Netacad courses which are made by cisco and are based on cisco systems. In conclusion, it's the only logical choice to make to use inside of the environment in question. \\
+In the school environment all routers and switches being used are using the cisco OS\footnote{
+https://www.cisco.com/c/en/us/support/docs/ios-nx-os-software/ios-software-releases-110/13178-15.html}. It has a wide variety of supported protocols. It has a lot of support available as it is the biggest player when it comes to Enterprise networking\textcite{ciscoRich}. The networking classes that are taught are based on Netacad courses which are made by cisco and are based on cisco systems. In conclusion, it's the only logical choice to make to use inside of the environment in question. \\
 In this test environment however, it's a different story. Buying a license for a cisco device is extremely pricey as an individual . Buying a license just to be able to test a router in a test environment would be a ridiculous waste of money.There are no special offers available at this time for students to use cisco OS with a student license or anything of the like. \\
 Considering that the functionalities that are going to be used on the router are quite basic it's a quick decision to make. Picking a free OS for the purpose of building this environment is the only choice that's feasible.
 \subsection { PFSense routing }
@@ -66,8 +67,4 @@ The second argument against PFSense is an argument based on the previous one. Th
 A router running on vyos is the one being used in the test environment. The vyos router was chosen mainly because it is an operating system based on unix,it was used in previous courses  and it's free.
 A lot of commands used in a vyos router actually have meaning in the cisco OS. The way of working with a vyos router is very comparable to working with a cisco router. And this is very important  to this situation. The test environment has to be representative of the real situation. And a vyos router is getting very close to a cisco router. As in the way that it feels and looks. This statement is not true when comparing the two systems in performance and possibilities of course. But that is not important in this case as the possibilities available are enough for us.
 
-%https://www.cisco.com/c/en/us/support/docs/ios-nx-os-software/ios-software-releases-110/13178-15.html
 
-%https://amigobulls.com/articles/cisco-maintains-switching-router-market-share-despite-revenue-declines
-
-%https://doc.pfsense.org/index.php/Configuration_Backup_and_Restore

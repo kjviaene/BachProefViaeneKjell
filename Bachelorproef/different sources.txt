@@ -1,0 +1,25 @@
+%SOURCE DPI : https://www.youtube.com/watch?v=QHHYpwtwd5I
+
+%SOURCE BOOK FIREWALL: zelfde als source DNS (chapter 8.8) DONE
+%SOURCE PFSENSE: https://www.pfsense.org/
+% SOURCE PFSENSE extra: http://www.rom.lv/pfsense/pfSense_%20The%20Definitive%20Guide%20Version%202.1.pdf (NIET DE LINK ZELF GEBRUIKEN? TIS EEN BOEK) DONE
+
+
+% SOURCE DNS: Computer Networking A top-down approach fifth edition, James F. Kurose, Keith W. Ross DONE
+% SOURCE VIEWS: http://www.zytrax.com/books/dns/ch7/view.html
+% SOURCE VIEW CODE: https://serverfault.com/questions/910207/whitelisting-blacklisting-using-bind
+%SOURCE DNS COUNCIL: https://www.afnic.fr/medias/documents/conseilscientifique/SC-consequences-of-DNS-based-Internet-filtering.pdf
+
+% source ACLs: Routing and Switching Essentials van cisco, chapter 9: Access Control Lists
+
+% source VYOS: https://wiki.vyos.net/wiki/User_Guide
+
+% source safe exam browser : https://www.youtube.com/watch?v=PlBA2qo9fZs
+% SOURCE FAQ: https://www.safeexambrowser.org/consortium/faq.html
+
+% source Inspera: http://www.inspera.com/
+%SOURCE WEBSITE: http://www.inspera.com/
+% source LMS: https://elearningindustry.com/what-is-an-lms-learning-management-system-basic-functions-features
+% source LMS: https://en.wikipedia.org/wiki/Learning_management_system
+
+% SOURCE CHAMILLO SELF HOSTED: https://elearningindustry.com/directory/software-categories/learning-management-systems/deployment/hosted

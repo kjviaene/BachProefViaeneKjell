@@ -1,0 +1,4 @@
+172.16.0.10 dns.example.lan
+172.16.0.11 samba.example.lan
+172.16.0.12 dhcp.example.lan
+172.16.0.13 web.example.lan
