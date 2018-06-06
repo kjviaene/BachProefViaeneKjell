@@ -1,0 +1,1089 @@
+\label{ch:bijlagen}
+
+\newpage
+\begin{lstlisting}[
+frame=single,
+breaklines=true,
+caption=VagrantFile,
+language=Ruby,
+basicstyle=\ttfamily,
+keywordstyle=\color{red},
+stringstyle=\color{blue},
+]
+# -*- mode: ruby -*-
+# vi: ft=ruby :
+
+require 'rbconfig'
+require 'yaml'
+
+# Set your default base box here
+DEFAULT_BASE_BOX = 'bento/centos-7.4'
+
+VAGRANTFILE_API_VERSION = '2'
+PROJECT_NAME = '/' + File.basename(Dir.getwd)
+
+# When set to `true`, Ansible will be forced to be run locally on the VM
+# instead of from the host machine (provided Ansible is installed).
+FORCE_LOCAL_RUN = false
+
+$ITERATIONS = 0
+hosts = YAML.load_file('vagrant-hosts.yml')
+
+# {{{ Helper functions
+def provision_ansible(config)
+
+  if run_locally?
+    # Provisioning configuration for shell script.
+    #The Iteration is here to prevent the provisioning from looping, as the command is being called inside a loop this stops it from being executed every call.
+    if $ITERATIONS == 0
+    config.vm.provision 'shell' do |sh|
+      sh.path = 'scripts/playbook-win.sh'
+    $ITERATIONS = 1
+    end
+  end
+  else
+    # Provisioning configuration for Ansible (for Mac/Linux hosts).
+    config.vm.provision 'ansible' do |ansible|
+      ansible.playbook = 'ansible/site.yml'
+      ansible.sudo = true
+    end
+  end
+end
+
+def run_locally?
+  windows_host? || FORCE_LOCAL_RUN
+end
+
+def windows_host?
+  RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/
+end
+
+# Set options for the network interface configuration. All values are
+# optional, and can include:
+# - ip (default = DHCP)
+# - netmask (default value = 255.255.255.0
+# - mac
+# - auto_config (if false, Vagrant will not configure this network interface
+# - intnet (if true, an internal network adapter will be created instead of a
+#   host-only adapter)
+def network_options(host)
+  options = {}
+
+  if host.key?('ip')
+    options[:ip] = host['ip']
+    options[:netmask] = host['netmask'] ||= '255.255.255.0'
+  else
+    options[:type] = 'dhcp'
+  end
+
+  options[:mac] = host['mac'].gsub(/[-:]/, '') if host.key?('mac')
+  options[:auto_config] = host['auto_config'] if host.key?('auto_config')
+  options[:virtualbox__intnet] = true if host.key?('intnet') && host['intnet']
+  options
+end
+
+def custom_synced_folders(vm, host)
+  return unless host.key?('synced_folders')
+  folders = host['synced_folders']
+
+  folders.each do |folder|
+    vm.synced_folder folder['src'], folder['dest'], folder['options']
+  end
+end
+
+# }}}
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.ssh.insert_key = false
+#   VyOS Router, comment line 89-104 if you want the PFSense router/Firewall to be build.
+#  config.vm.define 'router' do |router|
+#    router.vm.box = 'bertvv/vyos116'
+#    router.vm.network :private_network,
+#      ip: '192.0.2.254',
+#      netmask: '255.255.255.0',
+#      auto_config: false
+#    router.vm.network :private_network,
+#      ip: '172.16.255.254',
+#      netmask: '255.255.0.0',
+#      auto_config: false
+#    router.ssh.insert_key = false
+
+#    router.vm.provision "shell" do |sh|
+#      sh.path = "scripts/router-config.sh"
+#    end
+#  end
+  #PFSense firewall, comment line 106 -  127 If you want the VYoS router to be build.
+  config.vm.define 'firewall' do |firewall|
+    firewall.vm.box = 'kennyl/pfsense'
+    firewall.ssh.username = 'vagrant'
+    firewall.ssh.password = 'vagrant'
+    firewall.ssh.shell = '/bin/sh'
+    firewall.vm.guest = 'freebsd'
+    firewall.vm.synced_folder ".", "/vagrant", disabled: true
+    firewall.vm.network :private_network,
+      ip: '172.16.255.254',
+      netmask: '255.255.0.0',
+      auto_config: false
+    firewall.ssh.insert_key = false
+
+    firewall.vm.provision "file" do |fil|
+      fil.source = "scripts/FirewallScript"
+      fil.destination = "/home/vagrant/"
+    end
+    
+    firewall.vm.provision "shell" do |sh|
+      sh.path = "scripts/FirewallScript/firewall-config.sh"
+    end
+  end
+  hosts.each do |host|
+    config.vm.define host['name'] do |node|
+      node.vm.box = host['box'] ||= DEFAULT_BASE_BOX
+      node.vm.box_url = host['box_url'] if host.key? 'box_url'
+
+      node.vm.hostname = host['name']
+      node.vm.network :private_network, network_options(host)
+      custom_synced_folders(node.vm, host)
+
+      node.vm.provider :virtualbox do |vb|
+        # WARNING: if the name of the current directory is the same as the
+        # host name, this will fail.
+        vb.customize ['modifyvm', :id, '--groups', PROJECT_NAME]
+        vb.memory = 512
+      end
+      #This function is placed inside this loop to prevent it from being called on the router and firewall
+      provision_ansible(config)
+    end
+  end
+end
+\end{lstlisting}
+
+\newpage
+
+
+\begin{lstlisting}[
+frame=single,
+breaklines=true,
+caption=Vagrant-hosts.yml,
+language=Ruby,
+basicstyle=\ttfamily,
+keywordstyle=\color{red},
+stringstyle=\color{blue},
+]
+# vagrant_hosts.yml
+#
+# List of hosts to be created by Vagrant. This file controls the Vagrant
+# settings, specifically host name and network settings. You should at least
+# have a `name:`.
+
+---
+- name: samba
+ip: 172.16.0.11
+netmask: 255.255.0.0
+
+- name: dns
+ip: 172.16.0.10
+netmask: 255.255.0.0
+
+- name: dhcp
+ip: 172.16.0.12
+netmask: 255.255.0.0
+
+
+\end{lstlisting}
+\begin{lstlisting}[
+frame=single,
+breaklines=true,
+caption=site.yml,
+language=Ruby,
+basicstyle=\ttfamily,
+keywordstyle=\color{red},
+stringstyle=\color{blue},
+]
+# site.yml
+---
+- hosts: all
+become: true
+roles:
+- bertvv.rh-base
+
+- hosts: dns
+become: true
+roles:
+- bertvv.bind
+
+- hosts: dhcp
+become: true
+roles:
+- bertvv.dhcp
+
+- hosts: samba
+become: true
+roles:
+- bertvv.samba
+- bertvv.vsftpd
+post_tasks:
+- name: teachers all access in ExaminationFiles
+acl:
+path: /srv/shares/ExaminationFiles
+entity: teachers
+etype: group
+permissions: rwx
+state: present
+default: yes
+- name: students read access in ExaminationFiles
+acl:
+path: /srv/shares/ExaminationFiles
+entity: students
+etype: group
+permissions: rx
+state: present
+default: yes
+- name: students prohibit access in Teachers folder
+acl:
+path: /srv/shares/Teachers
+entity: students
+etype: group
+permissions: ---
+state: present
+default: yes
+
+\end{lstlisting}
+\begin{lstlisting}[
+frame=single,
+breaklines=true,
+caption='group\textunderscore vars/all.yml',
+language=Ruby,
+basicstyle=\ttfamily,
+keywordstyle=\color{red},
+stringstyle=\color{blue},
+]
+# group_vars/all.yml
+# Variables visible to all nodes
+---
+
+rhbase_install_packages:
+- bash-completion
+- bind-utils
+- git
+- nano
+- tree
+- vim-enhanced
+- wget
+rhbase_users:
+- name: kjell
+comment: 'kjell admin'
+groups:
+- users
+- wheel
+password: 'KEY'
+
+rhbase_motd: true
+rhbase_ssh_user: kjell
+rhbase_ssh_key: ssh-rsa SSH
+
+\end{lstlisting}
+\begin{lstlisting}[
+frame=single,
+breaklines=true,
+caption=dhcp.yml,
+language=Ruby,
+basicstyle=\ttfamily,
+keywordstyle=\color{red},
+stringstyle=\color{blue},
+]
+# host_vars/pu001.yml
+# Variables visible to pr001
+---
+rhbase_firewall_allow_services:
+- dhcp
+
+dhcp_global_authoritative: authoritative
+dhcp_global_default_lease_time: 43200
+dhcp_global_domain_name: example.lan
+dhcp_global_routers: 172.16.255.254
+dhcp_global_domain_name_servers:
+- 172.16.255.254
+dhcp_global_classes:
+- name: vbox
+match: 'match if binary-to-ascii(16,8,":",substring(hardware, 1, 3)) = "8:0:27"'
+- name: reserved
+match: 'match if hardware = 1:00:11:22:33:44:55'
+
+dhcp_subnets:
+- ip: 172.16.0.0
+netmask: 255.255.0.0
+pools:
+- range_begin: 172.16.0.2
+range_end: 172.16.127.254
+- range_begin: 172.16.128.1
+range_end: 172.16.191.254
+allow: 'members of "reserved"'
+- range_begin: 172.16.192.1
+range_end: 172.16.255.253
+allow: 'members of "vbox"'
+
+\end{lstlisting}
+\begin{lstlisting}[
+frame=single,
+breaklines=true,
+caption=dns.yml,
+language=Ruby,
+basicstyle=\ttfamily,
+keywordstyle=\color{red},
+stringstyle=\color{blue},
+]
+rhbase_firewall_allow_services:
+- dns
+bind_zone_master_server_ip: 172.16.0.10
+
+bind_zone_name: example.lan
+bind_zone_networks:
+- '172.16.0'
+bind_zone_name_servers:
+- dns
+bind_zone_hosts	:
+- name: dns
+ip: 172.16.0.10
+aliases:
+- nameserver
+- name: samba
+ip: 172.16.0.11
+aliases:
+- files
+- name: dhcp
+ip: 172.16.0.12
+aliases:
+- internal
+
+bind_listen_ipv4:
+- any
+bind_allow_query:
+- any
+bind_forwarders:
+- '172.16.0.10'
+
+\end{lstlisting}
+\begin{lstlisting}[
+frame=single,
+breaklines=true,
+caption=samba.yml,
+language=Ruby,
+basicstyle=\ttfamily,
+keywordstyle=\color{red},
+stringstyle=\color{blue},
+]
+rhbase_firewall_allow_services:
+- samba
+- ftp
+rhbase_user_groups:
+- students
+- teachers
+- it
+- public
+
+rhbase_users:
+- name: kjell
+comment: 'kjell admin'
+groups:
+- wheel
+- it
+- public
+password: 'KEY'
+- name: docent
+comment: 'docent'
+groups:
+- public
+- teachers
+password: 'KEY'
+- name: student
+comment: 'student'
+groups:
+- public
+- students
+password: 'KEY'
+shell: /sbin/nologin
+- name: student2
+comment: 'student2'
+groups:
+- public
+- students
+password: 'KEY'
+shell: /sbin/nologin
+samba_users:
+- name: kjell
+password: test
+- name: docent
+password: teacher
+- name: student
+password: student
+samba_shares:
+- name: HandIn
+comment: 'Share folder to hand in examinations'
+group: public
+valid_users: +students,+teachers,+it
+write_list: +students,+teachers,+it
+create_mode: '1775'
+force_create_mode: '1775'
+directory_mode: '1775'
+force_directory_mode : '1775'
+- name: ExaminationFiles
+comment: 'Share folder where students can find the exams'
+group: public
+valid_users: +students,+teachers,+it,+public
+write_list: +teachers
+create_mode: '0775'
+force_create_mode: '0775'
+directory_mode: '0775'
+force_directory_mode : '0775'
+
+- name: Teachers
+comment: 'Share folder for teachers, files with account info etc.'
+group: teachers
+valid_users: +teachers,+it
+write_list: +teachers,+it
+#directory_mode: '770'
+samba_workgroup: example
+samba_netbios_name: EXAMINATION
+samba_load_homes: true
+sambe_load_printers: false
+vsftpd_anonymous_enable: false
+vsftpd_local_enable: true
+vsftpd_write_enable: true
+vsftpd_local_umask: '007'
+vsftpd_local_root: '/srv/shares/'
+\end{lstlisting}
+\begin{lstlisting}[
+frame=single,
+breaklines=true,
+caption=inventory.py,
+language=Ruby,
+basicstyle=\ttfamily,
+keywordstyle=\color{red},
+stringstyle=\color{blue},
+]
+#! /usr/bin/python
+# coding=utf8
+#
+# Inventory script for Ansible skeleton, to be used on Windows host systems
+
+import socket
+import sys
+from getopt import getopt, GetoptError
+
+
+#
+# Helper functions
+#
+
+
+def usage():
+print ("Usage: %s [OPTION]\n"
+"  --list  list all hosts\n"
+"  --host=HOST  gives extra info"
+"about the specified host\n") % sys.argv[0]
+
+
+def list_hosts():
+host_name = socket.gethostname()
+print "{ \"all\": { \"hosts\": [\"%s\"] } }" % host_name
+
+
+def host_info(host):
+print "{}"
+
+#
+# Parse command line
+#
+
+try:
+opts, args = getopt(sys.argv[1:], "lh:", ['list', 'host='])
+except GetoptError as err:
+print str(err)
+usage()
+sys.exit(2)
+
+for opt, opt_arg in opts:
+if opt in ('-l', '--list'):
+list_hosts()
+sys.exit(0)
+if opt in ('-h', '--host'):
+host_info(opt_arg)
+else:
+assert False, "unhandled option: %s" % opt
+
+\end{lstlisting}
+\begin{lstlisting}[
+frame=single,
+breaklines=true,
+caption=playbook-win.sh,
+language=Ruby,
+basicstyle=\ttfamily,
+keywordstyle=\color{red},
+stringstyle=\color{blue},
+]
+#!/bin/bash
+# Source: https://github.com/geerlingguy/JJG-Ansible-Windows/blob/master/windows.sh
+
+# Windows shell provisioner for Ansible playbooks, based on KSid's
+# windows-vagrant-ansible: https://github.com/KSid/windows-vagrant-ansible
+#
+# @todo - Allow proxy configuration to be passed in via Vagrantfile config.
+#
+# @see README.md
+# @author Jeff Geerling, 2014
+# @version 1.0
+#
+
+#
+# Bash shell settings: exit on failing commands, unbound variables
+#
+set -o errexit
+set -o nounset
+set -o pipefail
+
+#
+# Variables
+#
+ITERATIONS=0
+# Color definitions
+readonly reset='\e[0m'
+readonly red='\e[0;31m'
+readonly yellow='\e[0;33m'
+readonly cyan='\e[0;36m'
+
+readonly playbook=/vagrant/ansible/site.yml
+readonly inventory=/vagrant/scripts/inventory.py
+
+#
+# Functions
+#
+
+main() {
+info "Running Playbook"
+if [ "$ITERATIONS" == 0 ]; then
+info "Running Ansible playbook ${playbook} locally on host ${HOSTNAME}."
+
+exit_on_vyos
+check_if_playbook_exists
+check_if_inventory_exists
+ensure_ansible_installed
+run_playbook "${@}"
+fi
+ITERATIONS=1
+}
+
+exit_on_vyos() {
+# If we're on a VyOS box, this script shouldn't be executed
+if user_exists vyos; then
+debug "On VyOS, not running Ansible here"
+exit 0
+fi
+}
+
+check_if_playbook_exists() {
+if [ ! -f ${playbook} ]; then
+die "Cannot find Ansible playbook ${playbook}."
+fi
+}
+
+check_if_inventory_exists() {
+if [ ! -f ${inventory} ]; then
+die "Cannot find inventory file ${inventory}."
+fi
+}
+
+ensure_ansible_installed() {
+if ! is_ansible_installed; then
+distro=$(get_linux_distribution)
+"install_ansible_${distro}" || die "Distribution ${distro} is not supported"
+fi
+
+info "Ansible version"
+ansible --version
+}
+
+is_ansible_installed() {
+which ansible-playbook > /dev/null 2>&1
+}
+
+run_playbook() {
+info "Running the playbook"
+
+# Get absolute path to playbook command
+playbook_cmd=$(which ansible-playbook)
+
+set -x
+${playbook_cmd} "${playbook}" \
+--inventory-file="${inventory}" \
+--limit="${HOSTNAME}" \
+--extra-vars "is_windows=true" \
+--connection=local \
+"$@"
+set +x
+}
+
+
+
+# Print the Linux distribution
+get_linux_distribution() {
+
+if user_exists vyos; then
+
+echo "vyos"
+
+elif [ -f '/etc/redhat-release' ]; then
+
+# RedHat-based distributions
+cut --fields=1 --delimiter=' ' '/etc/redhat-release' \
+| tr "[:upper:]" "[:lower:]"
+
+elif [ -f '/etc/lsb-release' ]; then
+
+# Debian-based distributions
+grep DISTRIB_ID '/etc/lsb-release' \
+| cut --delimiter='=' --fields=2 \
+| tr "[:upper:]" "[:lower:]"
+
+fi
+}
+
+# Install Ansible on a Fedora system.
+# The version in the repos is fairly current, so we'll install that
+install_ansible_fedora() {
+info "Fedora: installing Ansible from distribution repositories"
+dnf -y install ansible
+}
+
+# Install Ansible on a CentOS system from EPEL
+install_ansible_centos() {
+info "CentOS: installing Ansible from the EPEL repository"
+yum -y install epel-release
+yum -y install ansible
+}
+
+# Install Ansible on a recent Ubuntu distribution, from the PPA
+install_ansible_ubuntu() {
+info "Ubuntu: installing Ansible from PPA"
+# Remark: on older Ubuntu versions, it's python-software-properties
+apt-get -y install software-properties-common
+apt-add-repository -y ppa:ansible/ansible
+apt-get -y update
+apt-get -y install ansible
+}
+
+# Checks if the specified user exists
+user_exists() {
+user_name="${1}"
+getent passwd "${user_name}" > /dev/null
+}
+
+# Usage: info [ARG]...
+#
+# Prints all arguments on the standard output stream
+info() {
+printf "${yellow}>>> %s${reset}\n" "${*}"
+}
+
+# Usage: debug [ARG]...
+#
+# Prints all arguments on the standard output stream
+debug() {
+printf "${cyan}### %s${reset}\n" "${*}"
+}
+
+# Usage: error [ARG]...
+#
+# Prints all arguments on the standard error stream
+error() {
+printf "${red}!!! %s${reset}\n" "${*}" 1>&2
+}
+
+# Usage: die MESSAGE
+# Prints the specified error message and exits with an error status
+die() {
+error "${*}"
+exit 1
+}
+
+main "${@}"
+
+\end{lstlisting}
+\begin{lstlisting}[
+frame=single,
+breaklines=true,
+caption=role-deps.sh,
+]
+#! /usr/bin/env bash
+#
+# Author: Bert Van Vreckem <bert.vanvreckem@gmail.com>
+#
+# Install role dependencies. This script is meant to be used in the context of
+# ansible-skeleton[1] and ansible-role-skeleton[2].
+#
+# This script will search ansible/site.yml (or the specified playbook) for
+# roles assigned to hosts in the form "user.role". It will then try to install
+# them all. If possible, it will use Ansible Galaxy (on Linux, MacOS), but if
+# this is not available (e.g. on Windows), it will use Git to clone the latest
+# revision.
+#
+# Remark that this is a very crude technique and especially the Git fallback
+# is very brittle. It will download HEAD, and not necessarily the latest
+# release of the role. Additionally, the name of the repository is guessed,
+# but if it does not exist, the script will fail.
+#
+# Using ansible-galaxy and a dependencies.yml file is the best method, but
+# unavailable on Windows. This script is an effort to have a working
+# alternative.
+#
+# [1] https://github.com/bertvv/ansible-skeleton
+# [2] https://github.com/bertvv/ansible-role-skeleton
+
+set -o errexit  # abort on nonzero exitstatus
+set -o nounset  # abort on unbound variable
+
+#{{{ Variables
+readonly SCRIPT_NAME=$(basename "${0}")
+
+readonly ansible_root=ansible
+readonly playbook=${ansible_root}/site.yml
+readonly roles_path=${ansible_root}/roles
+#}}}
+
+main() {
+local dependencies
+
+process_args "${@}"
+
+set_roles_path
+select_installer
+
+dependencies="$(find_dependencies)"
+
+for dep in ${dependencies}; do
+owner=${dep%%.*}
+role=${dep##*.}
+
+if [[ ! -d "${roles_path}/${dep}" ]]; then
+${installer} "${owner}" "${role}"
+else
+echo "+ Skipping ${dep}, seems to be installed already"
+fi
+done
+}
+
+#{{{ Helper functions
+
+# If the default roles path does not exist, try "roles/"
+set_roles_path() {
+if [ ! -d "${roles_path}" ]; then
+if [ -d "${ansible_root}" ]; then
+mkdir "${roles_path}"
+else
+roles_path="roles"
+fi
+fi
+}
+
+# Find dependencies in the specified playbook
+find_dependencies() {
+grep '    - .*\..*' "${playbook}" \
+| cut -c7- \
+| grep --invert-match " " \
+| sort --unique
+}
+
+# Check if command line arguments are valid
+process_args() {
+if [ "${#}" -gt "1" ]; then
+echo "Expected at most 1 argument, got ${#}" >&2
+usage
+exit 2
+elif [ "${#}" -eq "1" ]; then
+if [ "${1}" = '-h' ] || [ "${1}" = '--help' ]; then
+usage
+exit 0
+elif [ ! -f "${1}" ]; then
+echo "Playbook `${1}` not found." >&2
+usage
+exit 1
+else
+playbook="${1}"
+fi
+elif [ "${#}" -eq "0" ] && [ ! -f "${playbook}" ]; then
+cat << _EOF_
+Default playbook ${playbook} not found. Maybe you should cd to the
+directory above ${playbook%%/*}/, or specify the playbook.
+_EOF_
+usage
+exit 1
+fi
+}
+
+# Print usage message on stdout
+usage() {
+cat << _EOF_
+Usage: ${SCRIPT_NAME} [PLAYBOOK]
+
+Installs role dependencies found in the specified playbook (or ${playbook}
+if none was given).
+
+OPTIONS:
+
+-h, --help  Prints this help message and exits
+
+EXAMPLES:
+
+$ ${SCRIPT_NAME}
+$ ${SCRIPT_NAME} test.yml
+_EOF_
+}
+
+
+# Usage: select_installer
+# Sets the variable `installer`, the function to use when installing roles
+# Try to use ansible-galaxy when it is available, and fall back to `git clone`
+# when it is not.
+select_installer() {
+if which ansible-galaxy > /dev/null 2>&1 ; then
+installer=install_role_galaxy
+else
+installer=install_role_git
+fi
+}
+
+# Usage: is_valid_url URL
+# returns 0 if the URL is valid, 22 otherwise
+is_valid_url() {
+local url=$1
+
+curl --silent --fail "${url}" > /dev/null
+}
+
+# Usage: install_role_galaxy OWNER ROLE
+install_role_galaxy() {
+local owner=$1
+local role=$2
+ansible-galaxy install --roles-path="${roles_path}" \
+"${owner}.${role}"
+}
+
+# Usage: install_role_git OWNER ROLE
+install_role_git() {
+local owner=$1
+local role=$2
+
+# First try https://github.com/OWNER/ansible-role-ROLE
+local repo="https://github.com/${owner}/ansible-role-${role}"
+
+if is_valid_url "${repo}"; then
+git clone "${repo}" "${roles_path}/${owner}.${role}"
+else
+# If that fails, try https://github.com/OWNER/ansible-ROLE
+git clone "https://github.com/${owner}/ansible-${role}" \
+"${roles_path}/${owner}.${role}"
+fi
+}
+#}}}
+
+main "${@}"
+
+\end{lstlisting}
+\begin{lstlisting}[
+frame=single,
+breaklines=true,
+caption=router-config.sh,
+basicstyle=\ttfamily,
+keywordstyle=\color{red},
+stringstyle=\color{blue},
+]
+#! /usr/bin/env bash
+#
+# Author: Bert Van Vreckem <bert.vanvreckem@gmail.com>
+#
+# Install role dependencies. This script is meant to be used in the context of
+# ansible-skeleton[1] and ansible-role-skeleton[2].
+#
+# This script will search ansible/site.yml (or the specified playbook) for
+# roles assigned to hosts in the form "user.role". It will then try to install
+# them all. If possible, it will use Ansible Galaxy (on Linux, MacOS), but if
+# this is not available (e.g. on Windows), it will use Git to clone the latest
+# revision.
+#
+# Remark that this is a very crude technique and especially the Git fallback
+# is very brittle. It will download HEAD, and not necessarily the latest
+# release of the role. Additionally, the name of the repository is guessed,
+# but if it does not exist, the script will fail.
+#
+# Using ansible-galaxy and a dependencies.yml file is the best method, but
+# unavailable on Windows. This script is an effort to have a working
+# alternative.
+#
+# [1] https://github.com/bertvv/ansible-skeleton
+# [2] https://github.com/bertvv/ansible-role-skeleton
+
+set -o errexit  # abort on nonzero exitstatus
+set -o nounset  # abort on unbound variable
+
+#{{{ Variables
+readonly SCRIPT_NAME=$(basename "${0}")
+
+readonly ansible_root=ansible
+readonly playbook=${ansible_root}/site.yml
+readonly roles_path=${ansible_root}/roles
+#}}}
+
+main() {
+local dependencies
+
+process_args "${@}"
+
+set_roles_path
+select_installer
+
+dependencies="$(find_dependencies)"
+
+for dep in ${dependencies}; do
+owner=${dep%%.*}
+role=${dep##*.}
+
+if [[ ! -d "${roles_path}/${dep}" ]]; then
+${installer} "${owner}" "${role}"
+else
+echo "+ Skipping ${dep}, seems to be installed already"
+fi
+done
+}
+
+#{{{ Helper functions
+
+# If the default roles path does not exist, try "roles/"
+set_roles_path() {
+if [ ! -d "${roles_path}" ]; then
+if [ -d "${ansible_root}" ]; then
+mkdir "${roles_path}"
+else
+roles_path="roles"
+fi
+fi
+}
+
+# Find dependencies in the specified playbook
+find_dependencies() {
+grep '    - .*\..*' "${playbook}" \
+| cut -c7- \
+| grep --invert-match " " \
+| sort --unique
+}
+
+# Check if command line arguments are valid
+process_args() {
+if [ "${#}" -gt "1" ]; then
+echo "Expected at most 1 argument, got ${#}" >&2
+usage
+exit 2
+elif [ "${#}" -eq "1" ]; then
+if [ "${1}" = '-h' ] || [ "${1}" = '--help' ]; then
+usage
+exit 0
+elif [ ! -f "${1}" ]; then
+echo "Playbook `${1}` not found." >&2
+usage
+exit 1
+else
+playbook="${1}"
+fi
+elif [ "${#}" -eq "0" ] && [ ! -f "${playbook}" ]; then
+cat << _EOF_
+Default playbook ${playbook} not found. Maybe you should cd to the
+directory above ${playbook%%/*}/, or specify the playbook.
+_EOF_
+usage
+exit 1
+fi
+}
+
+# Print usage message on stdout
+usage() {
+cat << _EOF_
+Usage: ${SCRIPT_NAME} [PLAYBOOK]
+
+Installs role dependencies found in the specified playbook (or ${playbook}
+if none was given).
+
+OPTIONS:
+
+-h, --help  Prints this help message and exits
+
+EXAMPLES:
+
+$ ${SCRIPT_NAME}
+$ ${SCRIPT_NAME} test.yml
+_EOF_
+}
+
+
+# Usage: select_installer
+# Sets the variable `installer`, the function to use when installing roles
+# Try to use ansible-galaxy when it is available, and fall back to `git clone`
+# when it is not.
+select_installer() {
+if which ansible-galaxy > /dev/null 2>&1 ; then
+installer=install_role_galaxy
+else
+installer=install_role_git
+fi
+}
+
+# Usage: is_valid_url URL
+# returns 0 if the URL is valid, 22 otherwise
+is_valid_url() {
+local url=$1
+
+curl --silent --fail "${url}" > /dev/null
+}
+
+# Usage: install_role_galaxy OWNER ROLE
+install_role_galaxy() {
+local owner=$1
+local role=$2
+ansible-galaxy install --roles-path="${roles_path}" \
+"${owner}.${role}"
+}
+
+# Usage: install_role_git OWNER ROLE
+install_role_git() {
+local owner=$1
+local role=$2
+
+# First try https://github.com/OWNER/ansible-role-ROLE
+local repo="https://github.com/${owner}/ansible-role-${role}"
+
+if is_valid_url "${repo}"; then
+git clone "${repo}" "${roles_path}/${owner}.${role}"
+else
+# If that fails, try https://github.com/OWNER/ansible-ROLE
+git clone "https://github.com/${owner}/ansible-${role}" \
+"${roles_path}/${owner}.${role}"
+fi
+}
+#}}}
+
+main "${@}"
+
+\end{lstlisting}
+\begin{lstlisting}[
+frame=single,
+breaklines=true,
+caption=firewall-config.sh,
+language=Ruby,
+basicstyle=\ttfamily,
+keywordstyle=\color{red},
+stringstyle=\color{blue},
+]
+#!/bin/sh
+pkg install -y git
+mv /home/vagrant/FirewallScript/config.xml /cf/conf/
+echo "Rebooting now!"
+reboot
+
+\end{lstlisting}

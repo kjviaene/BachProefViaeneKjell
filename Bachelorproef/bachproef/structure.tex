@@ -27,7 +27,7 @@
 \usepackage[english,dutch]{babel}    % Taalinstellingen: woordsplitsingen,
                              %  commando's voor speciale karakters
                              %  ("dutch" voor NL)
-        
+\usepackage{dingbat}
 \usepackage{tabu}                     
 \usepackage{array}
 \usepackage{listings}
@@ -58,6 +58,7 @@
                              % 0, 147, 208 = officiële kleur HoGent FBO
 \newtcblisting{cisco}[1][]{size=fbox, listing only, listing options={style=tcblatex,basicstyle=\ttfamily\scriptsize,tabsize=2,language=sh},#1}
 
+\lstloadlanguages{Ruby}
 % Paragraph style: no indent, add space between paragraphs
 \setlength{\parindent}{0em}
 \setlength{\parskip}{1em}
